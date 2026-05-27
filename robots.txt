@@ -1,0 +1,6 @@
+# Arndt Construction — robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://bmore2112.github.io/arndt-construction/sitemap.xml

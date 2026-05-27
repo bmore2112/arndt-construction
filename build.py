@@ -1,0 +1,575 @@
+"""
+Arndt Construction site generator.
+
+Run: python build.py
+Produces all pages from the shared head/nav/footer templates defined here.
+"""
+from pathlib import Path
+import json
+
+# ============================================================
+# SITE CONSTANTS
+# ============================================================
+BASE_URL = "https://bmore2112.github.io/arndt-construction"
+SITE_NAME = "Arndt Construction"
+PHONE = "(443) 624-7508"
+PHONE_E164 = "+14436247508"
+PHONE_HREF = "tel:4436247508"
+EMAIL = "nathanielarndtconstruction@gmail.com"
+ADDRESS = "11410 Rawhide Road, Lusby, MD 20657"
+LICENSE = "MHIC #115973"
+FOUNDER = "Nathaniel Arndt"
+OG_IMAGE = BASE_URL + "/arndt-hero.jpg"
+LOGO = BASE_URL + "/arndt-logo-cropped.png"
+
+# ============================================================
+# SCHEMA
+# ============================================================
+LOCAL_BUSINESS = {
+    "@context": "https://schema.org",
+    "@type": ["RoofingContractor", "LocalBusiness"],
+    "@id": BASE_URL + "/#business",
+    "name": SITE_NAME,
+    "alternateName": "Arndt Construction Roofing & Siding",
+    "image": LOGO,
+    "logo": LOGO,
+    "url": BASE_URL + "/",
+    "telephone": PHONE_E164,
+    "email": EMAIL,
+    "priceRange": "$$",
+    "slogan": "Built to weather the Chesapeake",
+    "description": "Family-owned roofing, siding, gutter, and storm-damage contractor serving Calvert County and Southern Maryland. Free inspections. Licensed (MHIC #115973), bonded, and insured.",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "11410 Rawhide Road",
+        "addressLocality": "Lusby",
+        "addressRegion": "MD",
+        "postalCode": "20657",
+        "addressCountry": "US",
+    },
+    "geo": {"@type": "GeoCoordinates", "latitude": 38.418, "longitude": -76.456},
+    "openingHoursSpecification": [{
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "09:00", "closes": "17:00",
+    }],
+    "areaServed": [
+        {"@type": "AdministrativeArea", "name": "Calvert County, Maryland"},
+        {"@type": "AdministrativeArea", "name": "St. Mary's County, Maryland"},
+        {"@type": "AdministrativeArea", "name": "Charles County, Maryland"},
+        {"@type": "AdministrativeArea", "name": "Anne Arundel County, Maryland"},
+        {"@type": "AdministrativeArea", "name": "Prince George's County, Maryland"},
+    ],
+    "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Roofing & Exterior Services",
+        "itemListElement": [
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Roof Replacement & Repair", "url": BASE_URL + "/roofing/"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Siding Installation", "url": BASE_URL + "/siding/"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Storm Damage Repair", "url": BASE_URL + "/storm-damage/"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Seamless Gutter Installation", "url": BASE_URL + "/gutters/"}},
+            {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Insurance Claim Assistance", "url": BASE_URL + "/insurance-claims/"}},
+        ],
+    },
+    "sameAs": [
+        "https://www.facebook.com/ArndtConstruction/",
+        "https://www.yelp.com/biz/arndt-construction-lusby",
+    ],
+    "founder": {"@type": "Person", "name": FOUNDER},
+    "aggregateRating": {
+        "@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "6", "bestRating": "5", "worstRating": "5",
+    },
+}
+
+
+def breadcrumbs(items):
+    """items: [(name, url_path), ...]"""
+    return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": i + 1, "name": name,
+             "item": BASE_URL + path if path else None}
+            for i, (name, path) in enumerate(items)
+        ],
+    }
+
+
+def service_schema(name, description, slug):
+    return {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": name,
+        "description": description,
+        "url": BASE_URL + slug,
+        "provider": {"@id": BASE_URL + "/#business"},
+        "areaServed": ["Calvert County, MD", "St. Mary's County, MD", "Charles County, MD",
+                       "Anne Arundel County, MD", "Prince George's County, MD"],
+    }
+
+
+def article_schema(title, description, slug, date_published):
+    return {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": title,
+        "description": description,
+        "url": BASE_URL + slug,
+        "datePublished": date_published,
+        "image": OG_IMAGE,
+        "author": {"@type": "Organization", "name": SITE_NAME, "url": BASE_URL + "/"},
+        "publisher": {"@type": "Organization", "name": SITE_NAME, "logo": {"@type": "ImageObject", "url": LOGO}},
+        "mainEntityOfPage": {"@type": "WebPage", "@id": BASE_URL + slug},
+    }
+
+
+def faq_schema(qa_pairs):
+    return {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {"@type": "Question", "name": q,
+             "acceptedAnswer": {"@type": "Answer", "text": a}}
+            for q, a in qa_pairs
+        ],
+    }
+
+
+# ============================================================
+# HEAD
+# ============================================================
+def head(title, description, path, schemas=None, og_type="website"):
+    canonical = BASE_URL + path
+    schemas = schemas or []
+    schema_blocks = "\n".join(
+        f'<script type="application/ld+json">{json.dumps(s, separators=(",", ":"))}</script>'
+        for s in schemas
+    )
+    return f"""<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="{description}">
+<link rel="canonical" href="{canonical}">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#000000">
+<meta name="author" content="{SITE_NAME}">
+<meta property="og:type" content="{og_type}">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{description}">
+<meta property="og:image" content="{OG_IMAGE}">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{description}">
+<meta name="twitter:image" content="{OG_IMAGE}">
+<link rel="icon" type="image/png" href="/arndt-logo-cropped.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+{schema_blocks}"""
+
+
+# ============================================================
+# NAV (used on all pages)
+# ============================================================
+def nav_html():
+    return f"""<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="/" class="brand" aria-label="Arndt Construction home">
+      <img src="/arndt-logo-cropped.png" alt="Arndt Construction — Roofing &amp; Siding"/>
+    </a>
+    <div class="nav-links" id="primary-nav" role="navigation" aria-label="Primary">
+      <div class="nav-dropdown">
+        <a href="/roofing/" class="nav-dropdown-toggle">Services <span class="caret">▾</span></a>
+        <div class="nav-dropdown-menu">
+          <a href="/roofing/">Roofing</a>
+          <a href="/siding/">Siding</a>
+          <a href="/storm-damage/">Storm Damage</a>
+          <a href="/gutters/">Gutters</a>
+          <a href="/insurance-claims/">Insurance Claims</a>
+        </div>
+      </div>
+      <a href="/service-area/">Service Area</a>
+      <a href="/gallery/">Gallery</a>
+      <a href="/reviews/">Reviews</a>
+      <a href="/learn/">Learn</a>
+      <a href="/about/">About</a>
+    </div>
+    <div class="nav-cta">
+      <div class="nav-social" aria-label="Social media">
+        <a href="https://www.facebook.com/ArndtConstruction/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12c0-5.5-4.5-10-10-10S2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12z"/></svg>
+        </a>
+        <a href="https://www.yelp.com/biz/arndt-construction-lusby" target="_blank" rel="noopener" aria-label="Yelp">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.5 13.6l4.1 1.3c.6.2.9.9.6 1.5l-1.8 3.5c-.3.6-1.1.7-1.6.3l-3.2-2.8c-.7-.6-.3-1.7.6-1.8l1.3-.0zm-1.4-3l3.4-3c.5-.4 1.3-.2 1.6.4l1.6 3.6c.3.6-.2 1.3-.9 1.3l-4.4.4c-.9.1-1.4-1.1-.7-1.7l-.6-1zM12 12l-1-4.1c-.2-.6.3-1.2.9-1.2l4 .2c.7 0 1.1.7.7 1.3l-2.3 3.7c-.4.6-1.4.7-1.8.1l-.5 0zM10 14.1l-2.4 3.5c-.4.6-1.2.5-1.6 0L3.5 14.5c-.4-.5-.1-1.3.5-1.5l4.1-1c.9-.2 1.6.7 1.1 1.5l.8.6zm.6-3.5L7.4 8.1c-.5-.4-.4-1.2.2-1.5l3.5-1.8c.6-.3 1.4.1 1.4.8l.5 4.4c.1.9-1 1.4-1.7.8l-.7-.2z"/></svg>
+        </a>
+      </div>
+      <span class="phone">Call <strong>{PHONE}</strong></span>
+      <a href="/contact/" class="btn btn-primary">Free Estimate</a>
+      <button class="menu-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-nav">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>"""
+
+
+# ============================================================
+# FOOTER
+# ============================================================
+def footer_html():
+    return f"""<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="/" class="brand" aria-label="Arndt Construction home">
+          <img src="/arndt-logo-cropped.png" alt="Arndt Construction"/>
+        </a>
+        <p>Family-owned roofing, siding, and storm restoration. Serving Calvert County and Southern Maryland since 2019.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="/roofing/">Roof Replacement &amp; Repair</a></li>
+          <li><a href="/siding/">Vinyl &amp; Fiber Cement Siding</a></li>
+          <li><a href="/storm-damage/">Storm Damage Repair</a></li>
+          <li><a href="/gutters/">Seamless Gutters</a></li>
+          <li><a href="/insurance-claims/">Insurance Claim Help</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/service-area/">Service Area</a></li>
+          <li><a href="/gallery/">Gallery</a></li>
+          <li><a href="/reviews/">Reviews</a></li>
+          <li><a href="/learn/">Learning Center</a></li>
+          <li><a href="/local-partners/">Local Partners</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="{PHONE_HREF}">{PHONE}</a></li>
+          <li><a href="mailto:{EMAIL}">Email us</a></li>
+          <li>Mon – Sun · 9 AM – 5 PM</li>
+          <li>{ADDRESS}</li>
+          <li>{LICENSE}</li>
+        </ul>
+        <div class="social">
+          <a href="https://www.facebook.com/ArndtConstruction/" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 22v-8h3l1-4h-4V7.5c0-1.1.4-2 2-2h2V2.1c-.4 0-1.6-.1-3-.1-3 0-5 1.8-5 5.2V10H6v4h3v8h4z"/></svg>
+          </a>
+          <a href="https://www.yelp.com/biz/arndt-construction-lusby" target="_blank" rel="noopener" aria-label="Yelp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.5 13.6l4.1 1.3c.6.2.9.9.6 1.5l-1.8 3.5c-.3.6-1.1.7-1.6.3l-3.2-2.8c-.7-.6-.3-1.7.6-1.8l1.3-.0zm-1.4-3l3.4-3c.5-.4 1.3-.2 1.6.4l1.6 3.6c.3.6-.2 1.3-.9 1.3l-4.4.4c-.9.1-1.4-1.1-.7-1.7l-.6-1zM12 12l-1-4.1c-.2-.6.3-1.2.9-1.2l4 .2c.7 0 1.1.7.7 1.3l-2.3 3.7c-.4.6-1.4.7-1.8.1l-.5 0zM10 14.1l-2.4 3.5c-.4.6-1.2.5-1.6 0L3.5 14.5c-.4-.5-.1-1.3.5-1.5l4.1-1c.9-.2 1.6.7 1.1 1.5l.8.6zm.6-3.5L7.4 8.1c-.5-.4-.4-1.2.2-1.5l3.5-1.8c.6-.3 1.4.1 1.4.8l.5 4.4c.1.9-1 1.4-1.7.8l-.7-.2z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr"></span> {SITE_NAME}. All rights reserved.</span>
+      <span><a href="/privacy/">Privacy</a> · arndtconstructionmd.com · Licensed · Bonded · Insured</span>
+    </div>
+  </div>
+</footer>"""
+
+
+# ============================================================
+# PAGE BUILDER
+# ============================================================
+def build(path, title, description, body, schemas=None, og_type="website"):
+    schemas = schemas or []
+    # Always include LocalBusiness reference on every page via @id ref where possible
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+{head(title, description, path, schemas, og_type)}
+</head>
+<body>
+{nav_html()}
+{body}
+{footer_html()}
+<script src="/app.js" defer></script>
+</body>
+</html>"""
+    if path == "/":
+        out = Path("index.html")
+    else:
+        out = Path(path.strip("/")) / "index.html"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(html, encoding="utf-8")
+    print(f"  built {path:50s} -> {out}")
+
+
+# ============================================================
+# SHARED FRAGMENTS
+# ============================================================
+def cta_band(headline="Ready to schedule your free inspection?", sub="Roofing, siding, gutters, or storm damage — call or send a message. We answer same business day.", button_text="Book a Free Inspection", button_href="/contact/"):
+    return f"""<section class="cta-band">
+  <div class="container">
+    <div class="cta-band-inner reveal">
+      <div>
+        <h2>{headline}</h2>
+        <p>{sub}</p>
+      </div>
+      <div class="cta-band-actions">
+        <a href="{button_href}" class="btn btn-primary btn-lg">{button_text}</a>
+        <a href="{PHONE_HREF}" class="btn btn-ghost btn-lg">Call {PHONE}</a>
+      </div>
+    </div>
+  </div>
+</section>"""
+
+
+def crumbs_html(items):
+    """Render breadcrumbs in body. items: [(name, path)...]; last item is current page (no link)."""
+    li = []
+    for i, (name, path) in enumerate(items):
+        last = i == len(items) - 1
+        if last:
+            li.append(f'<span aria-current="page">{name}</span>')
+        else:
+            li.append(f'<a href="{path}">{name}</a>')
+    return f'<nav class="crumbs container" aria-label="Breadcrumb">{" / ".join(li)}</nav>'
+
+
+# ============================================================
+# PAGE: HOME
+# ============================================================
+HOME_BODY = """
+<a id="top"></a>
+
+<header class="hero">
+  <video class="hero-bg" autoplay muted loop playsinline preload="metadata" poster="/arndt-hero.jpg" aria-hidden="true">
+    <source src="/arndt-hero.mp4" type="video/mp4">
+  </video>
+  <div class="container">
+    <div class="hero-grid">
+      <span class="eyebrow reveal">Maryland · Family Owned · MHIC #115973</span>
+      <h1 class="reveal" style="margin-top:24px">
+        Built to weather<br/>the <em>Chesapeake.</em>
+      </h1>
+      <p class="hero-lead reveal">
+        Family owned and operated. Roofing, siding, storm damage repair, and insurance claims for residential and commercial properties across Calvert County and Southern Maryland. Pressure-free, no-hassle estimates before any job begins.
+      </p>
+      <div class="hero-actions reveal">
+        <a href="/contact/" class="btn btn-primary btn-lg">Request Inspection</a>
+        <a href="tel:4436247508" class="btn btn-ghost btn-lg">Emergency Repair · (443) 624-7508</a>
+      </div>
+      <div class="hero-meta reveal">
+        <div><div class="k">7+</div><div class="v">Years on Roofs</div></div>
+        <div><div class="k">A+</div><div class="v">BBB Rating</div></div>
+        <div><div class="k">48h</div><div class="v">Storm Response</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Lusby</span><span>Solomons</span><span>Prince Frederick</span><span>Huntingtown</span>
+      <span>Dunkirk</span><span>Owings</span><span>Chesapeake Beach</span><span>St. Leonard</span>
+      <span>Lusby</span><span>Solomons</span><span>Prince Frederick</span><span>Huntingtown</span>
+      <span>Dunkirk</span><span>Owings</span><span>Chesapeake Beach</span><span>St. Leonard</span>
+    </div>
+  </div>
+</header>
+
+<!-- SERVICES TEASER -->
+<section id="services">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">What we do</span>
+        <h2 style="margin-top:16px">Full-envelope<br/>protection.</h2>
+      </div>
+      <p class="lede">Roofing contractors for residential and commercial properties. From the ridge cap to the gutter line, we install systems built for Mid-Atlantic weather — wind, hail, snow load, and humid summers. One crew. One warranty.</p>
+    </div>
+
+    <div class="svc-grid">
+      <a class="svc reveal" href="/roofing/">
+        <div class="svc-img"><img src="/svc-roofing.png" alt="Two-story Colonial home with new architectural shingle roof" loading="lazy"/></div>
+        <div class="svc-body">
+          <div class="svc-num">01 / Roofing</div>
+          <h3>Architectural shingles, metal &amp; flat systems.</h3>
+          <p>Architectural asphalt, standing-seam metal, and TPO flat-roof systems engineered for Mid-Atlantic weather. Tear-off, decking repair, and ridge ventilation handled in-house.</p>
+          <span class="svc-link">Roofing services</span>
+        </div>
+      </a>
+      <a class="svc reveal" href="/siding/">
+        <div class="svc-img"><img src="/svc-siding.png" alt="Tan vinyl siding with stone veneer accent and white seamless gutters" loading="lazy"/></div>
+        <div class="svc-body">
+          <div class="svc-num">02 / Siding</div>
+          <h3>Vinyl, fiber cement &amp; cedar shake.</h3>
+          <p>Curb appeal and thermal performance, together. We work with James Hardie, CertainTeed, and traditional cedar shake for historic homes around the Bay.</p>
+          <span class="svc-link">Siding services</span>
+        </div>
+      </a>
+      <a class="svc reveal" href="/storm-damage/">
+        <div class="svc-img"><img src="/svc-storm.png" alt="Large fallen tree across the front of a home after a storm" loading="lazy"/></div>
+        <div class="svc-body">
+          <div class="svc-num">03 / Storm Damage</div>
+          <h3>Rapid response for hail &amp; wind.</h3>
+          <p>Emergency tarping, leak mitigation, and full restoration after hail, wind, and fallen-tree damage. We answer the phone — and we show up.</p>
+          <span class="svc-link">Storm damage</span>
+        </div>
+      </a>
+      <a class="svc reveal" href="/gutters/">
+        <div class="svc-img"><img src="/svc-gutters.png" alt="Yellow ranch home with white seamless aluminum gutters" loading="lazy"/></div>
+        <div class="svc-body">
+          <div class="svc-num">04 / Gutters</div>
+          <h3>Seamless aluminum &amp; leaf guards.</h3>
+          <p>Custom-bent seamless gutters with hidden hangers and quality leaf guards. We protect your foundation, siding, and landscaping at the same time.</p>
+          <span class="svc-link">Gutter services</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- INSURANCE TEASER -->
+<section id="insurance">
+  <div class="container">
+    <div class="ins-grid">
+      <div>
+        <span class="eyebrow reveal">Insurance Claims · Storm Damage</span>
+        <h2 class="reveal" style="margin-top:16px">Storm damage?<br/><span style="color:var(--accent);">Get inspected first.</span></h2>
+        <p class="ins-lead reveal">
+          Most homeowners call their insurance company before they know what's actually wrong with the roof. That's how claims get denied — or settled for half what they're worth. Here's the right order of operations.
+        </p>
+        <a href="/insurance-claims/" class="btn btn-primary btn-lg reveal" style="margin-top:36px">Read the full guide</a>
+        <div class="badges reveal" style="margin-top:32px">
+          <span class="badge"><strong>Licensed</strong> · MHIC #115973</span>
+          <span class="badge"><strong>Bonded</strong></span>
+          <span class="badge"><strong>Insured</strong></span>
+          <span class="badge"><strong>Free Inspection</strong></span>
+        </div>
+      </div>
+
+      <div class="ins-steps reveal">
+        <div class="step">
+          <div class="step-label">1</div>
+          <div>
+            <h4>Get a roof inspection first.</h4>
+            <p>Before you ever pick up the phone to your insurer. We tell you honestly whether you have damage that meets a claim threshold.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-label">2</div>
+          <div>
+            <h4>Document everything, fast.</h4>
+            <p>Exterior shots, ceiling stains, hail marks, fallen branches. The first 24 hours after damage is when documentation is cleanest.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-label">3</div>
+          <div>
+            <h4>Have your contractor meet the adjuster.</h4>
+            <p>Adjusters miss damage. Having an experienced roofer on the ladder with them is the biggest single factor in a fair payout.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK TEASER -->
+<section id="work">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Recent work</span>
+        <h2 style="margin-top:16px">Real homes.<br/>Real before-and-afters.</h2>
+      </div>
+      <p class="lede">A look at recent re-roofs, siding refreshes, and storm restorations from across Maryland. No stock photos — every shot is from a job we ran ourselves. <a href="/gallery/" style="color:var(--accent);text-decoration:underline">See the full gallery →</a></p>
+    </div>
+
+    <div class="work-grid">
+      <div class="tile reveal"><img src="/job-5.png" alt="Two-story Colonial home before and after architectural shingle re-roof" loading="lazy"/><div class="tile-cap"><span class="tag">01 · Re-roof</span><span>2-Story Colonial</span></div></div>
+      <div class="tile reveal"><img src="/job-3.png" alt="Tear-off in progress and finished home with new architectural shingles" loading="lazy"/><div class="tile-cap"><span class="tag">02 · Full Tear-off</span><span>Architectural Asphalt</span></div></div>
+      <div class="tile reveal"><img src="/job-2.png" alt="Detached garage refresh with new roof, siding, doors, and shutters" loading="lazy"/><div class="tile-cap"><span class="tag">03 · Garage Refresh</span><span>Roof &amp; Siding</span></div></div>
+      <div class="tile reveal"><img src="/job-8.png" alt="Home after storm restoration with new architectural shingle roof" loading="lazy"/><div class="tile-cap"><span class="tag">04 · Storm Restored</span><span>After</span></div></div>
+      <div class="tile reveal"><img src="/job-7.png" alt="Roof install in progress and completed two-story home" loading="lazy"/><div class="tile-cap"><span class="tag">05 · Re-roof + Detail</span><span>2-Story Home</span></div></div>
+      <div class="tile reveal"><img src="/job-6.png" alt="Top-down view of ridge cap install on architectural shingle roof" loading="lazy"/><div class="tile-cap"><span class="tag">06 · Ridge &amp; Cap</span><span>Ventilation Detail</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS TEASER -->
+<section id="voices">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">Homeowners</span>
+        <h2 style="margin-top:16px">What the<br/>neighbors say.</h2>
+      </div>
+      <p class="lede">Verified reviews from our Facebook page — real names, real jobs, in their own words. <a href="/reviews/" style="color:var(--accent);text-decoration:underline">See all reviews →</a></p>
+    </div>
+    <div class="sec-head-row reveal">
+      <button class="review-trigger" type="button" data-open-review>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279L12 19.446l-7.416 3.967 1.48-8.279L0 9.306l8.332-1.151z"/></svg>
+        Leave us a Review
+      </button>
+    </div>
+
+    <div class="voices">
+      <a class="voice reveal" href="https://www.facebook.com/ArndtConstruction/reviews/" target="_blank" rel="noopener"><img src="/fb-review-1-laurie.png" alt="Laurie Chrisman Chisenhall recommends Arndt Construction" loading="lazy"/><div class="meta"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12c0-5.5-4.5-10-10-10S2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12z"/></svg><span class="who">Laurie Chrisman Chisenhall</span><span class="when">Dec 2025</span></div></a>
+      <a class="voice reveal" href="https://www.facebook.com/ArndtConstruction/reviews/" target="_blank" rel="noopener"><img src="/fb-review-2-shelby.png" alt="Shelby Jones recommends Arndt Construction" loading="lazy"/><div class="meta"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12c0-5.5-4.5-10-10-10S2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12z"/></svg><span class="who">Shelby Jones</span><span class="when">Jul 2025</span></div></a>
+      <a class="voice reveal" href="https://www.facebook.com/ArndtConstruction/reviews/" target="_blank" rel="noopener"><img src="/fb-review-5-brian.png" alt="Brian Byrnes recommends Arndt Construction" loading="lazy"/><div class="meta"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12c0-5.5-4.5-10-10-10S2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12z"/></svg><span class="who">Brian Byrnes</span><span class="when">Mar 2023</span></div></a>
+    </div>
+  </div>
+</section>
+""" + cta_band()
+
+
+# ============================================================
+# REVIEW MODAL (used on home, reviews, contact)
+# ============================================================
+REVIEW_MODAL = """<div class="modal-back" id="reviewModal" aria-hidden="true" role="dialog" aria-labelledby="reviewTitle" aria-modal="true">
+  <div class="modal">
+    <button class="modal-close" type="button" data-close-review aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <h3 id="reviewTitle">Leave us a review</h3>
+    <p>Pick a platform — your review helps the next homeowner find an honest contractor. Reviews live on each platform after you post.</p>
+    <div class="review-options">
+      <a class="review-opt" href="https://www.google.com/search?q=Arndt+Construction+Lusby+MD+reviews" target="_blank" rel="noopener">
+        <div class="icon g"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg></div>
+        <div class="body"><div class="name">Google</div><div class="desc">Most valuable for getting found by new customers nearby</div></div>
+      </a>
+      <a class="review-opt" href="https://www.facebook.com/ArndtConstruction/reviews/" target="_blank" rel="noopener">
+        <div class="icon f"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12c0-5.5-4.5-10-10-10S2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12z"/></svg></div>
+        <div class="body"><div class="name">Facebook</div><div class="desc">Reviews here get featured on our website with permission</div></div>
+      </a>
+      <a class="review-opt" href="https://www.yelp.com/writeareview/biz/arndt-construction-lusby" target="_blank" rel="noopener">
+        <div class="icon y"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.5 13.6l4.1 1.3c.6.2.9.9.6 1.5l-1.8 3.5c-.3.6-1.1.7-1.6.3l-3.2-2.8c-.7-.6-.3-1.7.6-1.8l1.3-.0zm-1.4-3l3.4-3c.5-.4 1.3-.2 1.6.4l1.6 3.6c.3.6-.2 1.3-.9 1.3l-4.4.4c-.9.1-1.4-1.1-.7-1.7l-.6-1zM12 12l-1-4.1c-.2-.6.3-1.2.9-1.2l4 .2c.7 0 1.1.7.7 1.3l-2.3 3.7c-.4.6-1.4.7-1.8.1l-.5 0zM10 14.1l-2.4 3.5c-.4.6-1.2.5-1.6 0L3.5 14.5c-.4-.5-.1-1.3.5-1.5l4.1-1c.9-.2 1.6.7 1.1 1.5l.8.6zm.6-3.5L7.4 8.1c-.5-.4-.4-1.2.2-1.5l3.5-1.8c.6-.3 1.4.1 1.4.8l.5 4.4c.1.9-1 1.4-1.7.8l-.7-.2z"/></svg></div>
+        <div class="body"><div class="name">Yelp</div><div class="desc">A second platform many homeowners check before hiring</div></div>
+      </a>
+    </div>
+    <div class="modal-note">Thank you — it really does take 30 seconds and it makes a real difference for a small family business.</div>
+  </div>
+</div>"""
+
+
+# ============================================================
+# RUN
+# ============================================================
+def main():
+    print("Building Arndt Construction site...")
+    # Home
+    build("/", "Roofing &amp; Siding Contractor in Lusby, MD | Arndt Construction",
+          "Family-owned roofing, siding, gutter, and storm-damage contractor serving Calvert County and Southern Maryland. Free inspections. MHIC #115973.",
+          HOME_BODY + REVIEW_MODAL, schemas=[LOCAL_BUSINESS])
+
+    # Service, area, learn, etc. — generated by build_pages_2.py to keep this script readable
+    # (build_pages_2 imports from this file)
+    import build_pages_2
+    build_pages_2.run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS)
+
+    print("Done.")
+
+
+if __name__ == "__main__":
+    main()
