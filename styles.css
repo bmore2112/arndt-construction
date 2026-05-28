@@ -1143,3 +1143,261 @@
   .cta-band-actions .btn{width:100%;justify-content:center}
   .btn-download .dl-badge{display:none}
 }
+
+/* ============================================================
+   MOBILE POLISH PASS — comprehensive responsive fixes
+   ============================================================ */
+
+/* Guard against any element exceeding the viewport width.
+   img is already capped, but svg, iframe, video, table need it too. */
+img, svg, iframe, video, table { max-width: 100%; }
+
+/* Long URLs / emails / phone numbers can break out of cards — wrap them */
+.aside-card a, .meta-row .v, .foot-col a, .voice .who, .voice .when,
+.cl-contact-phone, .partner-card a {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Tap targets — every clickable thing needs ≥40px (WCAG AA minimum is 24px,
+   AAA + Apple HIG recommend 44px). Already true for .btn, but safety-check
+   small inline links inside forms / nav with explicit padding. */
+.menu-btn { min-width: 44px; min-height: 44px; }
+
+/* ============================================================
+   TABLET RANGE (881–1024) — service grids, hero text constraint
+   ============================================================ */
+@media (max-width: 1024px) {
+  /* The new page-hero text-left layout: at tablet, give text the full container
+     and hide the image slot (already done in main rule, ensuring here too). */
+  .page-hero-content { max-width: 100% !important; }
+  .page-hero-media { display: none !important; }
+
+  /* Insurance step labels (A/B/C) scale down */
+  .step-label { font-size: 52px; width: 64px; }
+
+  /* Container side-padding still has breathing room at tablet */
+  .container { padding: 0 28px; }
+}
+
+/* ============================================================
+   STANDARD MOBILE (≤880) — nav, hero, sections, forms
+   ============================================================ */
+@media (max-width: 880px) {
+  /* Section padding everywhere — single source of truth for mobile rhythm */
+  section,
+  #services, #insurance, #work, #voices, #faq, #areas, #blog, #contact,
+  #contact-page, .article, .prose, .cta-band, .checklist-page {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  /* Hero specifically gets less top-padding since it sits directly under nav */
+  .hero { padding: 130px 0 64px; }
+
+  /* Hero h1 sizing — match home heading scale to subpages */
+  .hero h1 { font-size: clamp(2.1rem, 1.2rem + 5vw, 3.4rem); }
+
+  /* Section heads stack and gap shrinks */
+  .sec-head { gap: 20px; }
+  .sec-head .lede { font-size: 16px; }
+
+  /* CTA bands with 3 buttons stack at full width below 880 */
+  .cta-band-actions { flex-direction: column; align-items: stretch; gap: 12px; }
+  .cta-band-actions .btn { width: 100%; justify-content: center; }
+  .cta-band-actions .btn-download .dl-badge { display: none; }
+
+  /* Hero action buttons (Request Inspection / Emergency Repair) — full width */
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { width: 100%; justify-content: center; flex: none; }
+
+  /* Insurance step labels small */
+  .step-label { font-size: 42px; width: 52px; }
+  .step { padding: 18px 0; gap: 14px; }
+  .step h4 { font-size: 17px; }
+
+  /* Footer 4-col → 2x2, brand spans both columns */
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .foot-brand { grid-column: span 2; }
+
+  /* Map wraps get a sensible height on mobile (was 480px min, too tall) */
+  .map-wrap { min-height: 320px; }
+
+  /* Prose grid stacks, aside-cards become full-width and lose stickiness */
+  .prose { padding: 60px 0; }
+  .prose-aside { position: static; }
+  .aside-card { padding: 22px; }
+
+  /* Article body — tighter line length / smaller font */
+  .article-body p { font-size: 16px; line-height: 1.7; }
+
+  /* Storm checklist gate page */
+  .checklist-page { padding-top: 120px; padding-bottom: 64px; }
+  .cl-header-row { gap: 18px; }
+  .cl-contact { width: 100%; text-align: left; min-width: 0; }
+  .gate-form { padding: 24px; }
+  .gate-trust { gap: 8px; }
+  .gate-trust span { font-size: 10px; padding: 6px 11px; }
+
+  /* Reviews — column-count 2 already handled, just verify */
+  .voices { column-count: 1; }
+
+  /* Areas list — keep 2-col on mobile for compact tile feel */
+  .areas-list ul, .areas-list ul.full { grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+  .areas-list li { font-size: 14px; padding: 5px 0; }
+
+  /* Local partners — stack to 1 column at 720, ensure here too */
+  .partner-grid { grid-template-columns: 1fr; }
+
+  /* Service cards — sensible min-height (was 360, often too tall) */
+  .svc { min-height: 320px; }
+  .svc-body { padding: 22px; }
+  .svc h3 { font-size: 1.3rem; }
+  .svc p { font-size: 14.5px; }
+
+  /* Insurance card with the $0 / big number */
+  .ins-card { padding: 20px; flex-direction: column; align-items: stretch; gap: 14px; }
+  .ins-card .big { font-size: 44px; }
+
+  /* Contact / form */
+  form.estimate { padding: 22px; gap: 14px; }
+  .meta-row { grid-template-columns: 1fr; gap: 4px; padding: 14px 0; }
+
+  /* Modal sizing on small screens */
+  .modal { padding: 26px 22px; }
+  .modal h3 { font-size: 1.5rem; }
+
+  /* FAQ tighter padding */
+  .faq summary { padding: 22px 0; gap: 14px; }
+  .faq .ic { width: 32px; height: 32px; }
+  .faq .a { padding: 0 0 24px; font-size: 15.5px; }
+
+  /* Marquee — smaller, less crowded */
+  .marquee-track { padding: 16px 0; gap: 36px; }
+  .marquee span { font-size: 17px; gap: 36px; letter-spacing: .12em; }
+
+  /* Posts (blog hub) — full width cards */
+  .post { padding: 24px; min-height: 0; }
+  .post h3 { font-size: 1.2rem; }
+}
+
+/* ============================================================
+   SMALL MOBILE (≤560) — single col everything, tight padding
+   ============================================================ */
+@media (max-width: 560px) {
+  /* Container side-padding tighter for max content width */
+  .container { padding: 0 18px; }
+
+  /* Section padding even smaller on phones */
+  section,
+  #services, #insurance, #work, #voices, #faq, #areas, #blog, #contact,
+  #contact-page, .article, .prose, .cta-band, .checklist-page {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+
+  .hero { padding: 110px 0 52px; }
+  .hero h1 { font-size: clamp(1.9rem, 1rem + 6vw, 2.6rem); letter-spacing: -.005em; }
+  .hero h1 br { display: none; }   /* let it flow naturally */
+  .hero-lead { font-size: 15.5px; }
+
+  /* Hero meta — 2x2 layout, last item spans both */
+  .hero-meta { grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 20px; }
+  .hero-meta > div:last-child { grid-column: span 2; text-align: center; }
+  .hero-meta .k { font-size: 1.7rem; }
+
+  /* Page hero, section heads — tighter */
+  .page-hero h1, .page-hero-content h1 { font-size: clamp(1.7rem, 1.2rem + 2.5vw, 2.2rem); }
+  .page-hero-lede { font-size: 15.5px; }
+  h2 { font-size: clamp(1.6rem, 1.1rem + 3vw, 2.2rem); }
+
+  /* Footer single column on phones */
+  .foot-grid { grid-template-columns: 1fr; gap: 24px; }
+  .foot-brand { grid-column: span 1; }
+  .foot-bottom { flex-direction: column; gap: 6px; }
+
+  /* Form labels + inputs */
+  .field input, .field select, .field textarea { font-size: 16px; }  /* prevent iOS auto-zoom */
+  .gate-field input { font-size: 16px; padding: 12px 14px; }
+
+  /* Badges (Licensed etc) */
+  .badges { gap: 6px; }
+  .badge { font-size: 10.5px; padding: 6px 10px; }
+
+  /* Hero meta stat keys — keep big but not over-big */
+  .hero-meta .k { font-size: 1.6rem; }
+
+  /* Step labels (the big A/B/C/1/2/3) tighter */
+  .step-label { font-size: 34px; width: 42px; }
+
+  /* CTA band heading scale */
+  .cta-band h2 { font-size: clamp(1.5rem, 1.1rem + 2vw, 2rem); }
+
+  /* Modal full-screen feel on small phones */
+  .modal-back { padding: 12px; }
+  .modal { padding: 22px 18px; border-radius: 10px; }
+  .review-opt { padding: 14px 16px; gap: 12px; }
+  .review-opt .icon { width: 38px; height: 38px; }
+
+  /* Storm checklist header simplification on phones */
+  .cl-h1 { font-size: clamp(1.5rem, 1.1rem + 2.5vw, 2.2rem); }
+  .cl-contact { padding: 14px 16px; }
+  .cl-contact-phone { font-size: 21px; }
+
+  /* Tile captions in gallery */
+  .tile-cap { left: 12px; right: 12px; bottom: 12px; font-size: 11px; letter-spacing: .12em; gap: 8px; }
+
+  /* Service cards stack tighter */
+  .svc-body { padding: 18px; }
+
+  /* Areas list — single col on tiny screens */
+  .areas-list ul, .areas-list ul.full { grid-template-columns: 1fr; }
+
+  /* Crumbs smaller */
+  .crumbs { font-size: 10px; letter-spacing: .14em; }
+
+  /* Marquee tighter */
+  .marquee span { font-size: 15px; gap: 28px; }
+}
+
+/* ============================================================
+   TINY MOBILE (≤380) — last-ditch space saving for 320–380 phones
+   ============================================================ */
+@media (max-width: 380px) {
+  .container { padding: 0 14px; }
+  .hero h1 { font-size: 1.85rem; }
+  .nav-inner { gap: 8px; }
+  .brand img { height: 48px; }
+  .phone { display: none; }
+}
+
+/* ============================================================
+   LANDSCAPE PHONES (height-constrained, hero needs to be shorter)
+   ============================================================ */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+  .hero { padding: 90px 0 40px; }
+  .hero-meta { margin-top: 28px; }
+  .checklist-page { padding-top: 96px; }
+}
+
+/* ============================================================
+   iOS Safari address-bar fix: avoid 100vh issues in hero (we use padding not vh)
+   ============================================================ */
+.hero { min-height: 0; }   /* explicit, in case anything added height:100vh upstream */
+
+/* ============================================================
+   ACCESSIBILITY: focus rings on keyboard nav for all interactive
+   ============================================================ */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.btn:focus-visible { outline-offset: 3px; }
+
+/* Disable hover transforms on touch devices (no actual hover, prevents stuck states) */
+@media (hover: none) {
+  .btn:hover, .voice:hover, .tile:hover, .voices-foot a:hover,
+  .review-opt:hover, .post:hover, .partner-card:hover,
+  .svc:hover, .aside-card.urgent:hover { transform: none !important; }
+}
