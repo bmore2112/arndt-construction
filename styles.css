@@ -1401,3 +1401,98 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible {
   .review-opt:hover, .post:hover, .partner-card:hover,
   .svc:hover, .aside-card.urgent:hover { transform: none !important; }
 }
+
+/* ============================================================
+   MOBILE FIXES (round 2) — addressing observed phone rendering
+   ============================================================ */
+
+/* ----- NAV BAR: tighter, balanced on phones ----- */
+@media (max-width: 880px) {
+  .nav-inner { height: 70px; padding: 0; gap: 10px; }
+  .brand img { height: 46px; }
+  /* Compact Free Estimate button on mobile so it doesn't dominate */
+  .nav .nav-cta .btn-primary {
+    padding: 10px 14px;
+    font-size: 12px;
+    letter-spacing: .08em;
+  }
+  .menu-btn { width: 42px; height: 42px; }
+  .nav-cta { gap: 8px; }
+}
+
+/* On very narrow phones, drop the button text to just "Estimate" */
+@media (max-width: 420px) {
+  .brand img { height: 40px; }
+  .nav .nav-cta .btn-primary { padding: 9px 12px; font-size: 11px; }
+}
+
+/* ----- HERO META: 3-COLUMN on mobile so 48h sits naturally ----- */
+@media (max-width: 880px) {
+  .hero-meta {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+    padding-top: 18px;
+    margin-top: 36px;
+  }
+  .hero-meta > div:last-child {
+    grid-column: auto !important;
+    text-align: left !important;
+  }
+  .hero-meta .k { font-size: 1.55rem; }
+  .hero-meta .v { font-size: 9.5px; letter-spacing: .14em; margin-top: 6px; }
+}
+@media (max-width: 420px) {
+  .hero-meta .k { font-size: 1.35rem; }
+  .hero-meta .v { font-size: 9px; letter-spacing: .12em; }
+}
+
+/* ----- SUB-PAGE HERO PHOTOS: show as full-bleed background on mobile ----- */
+@media (max-width: 1024px) {
+  /* Override the universal hide so the photo CAN show on mobile when set */
+  .page-hero.has-bg .page-hero-media {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    background-position: center !important;
+    background-size: cover !important;
+    z-index: 0;
+  }
+  /* But still hide the dashed-border placeholder for pages without a photo */
+  .page-hero-media.is-placeholder { display: none !important; }
+
+  /* Dark gradient overlay so text stays readable over the photo */
+  .page-hero.has-bg {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .page-hero.has-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(0,0,0,.85) 0%,
+      rgba(0,0,0,.6) 40%,
+      rgba(0,0,0,.7) 75%,
+      rgba(0,0,0,.92) 100%);
+  }
+  .page-hero.has-bg .container {
+    position: relative;
+    z-index: 2;
+  }
+  .page-hero.has-bg h1,
+  .page-hero.has-bg .page-hero-lede,
+  .page-hero.has-bg .eyebrow {
+    text-shadow: 0 2px 14px rgba(0,0,0,.7);
+  }
+}
+
+/* ----- HOME HERO H1 SPACING (safety net even after source fix) ----- */
+@media (max-width: 880px) {
+  /* Ensure the br between "weather" and "the" still creates a space when hidden */
+  .hero h1 br { display: inline; visibility: hidden; }
+  .hero h1 br::after { content: " "; }
+}
