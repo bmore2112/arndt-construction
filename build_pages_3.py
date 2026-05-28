@@ -1,8 +1,10 @@
 """Remaining pages: insurance-claims, about, contact, reviews, gallery,
 service-area + cities, learn + articles, local-partners, privacy, 404."""
 
+DL_ICON = '<svg class="dl-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>'
 
-def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, page_hero, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS):
+
+def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, page_hero, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS, download_btn=None):
 
     # ============================================================
     # INSURANCE CLAIMS
@@ -21,7 +23,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 {crumbs_html([("Home", "/"), ("Insurance Claims", None)])}
 {page_hero("Insurance Claims · Storm Damage",
            "Roof Insurance Claim Help in Maryland",
-           "Storm damage? Get inspected first. Most homeowners call their insurance company before they know what's actually wrong — and that's how claims get denied or settled for half what they're worth. Here's the right order of operations.")}
+           "Storm damage? Get inspected first. Most homeowners call their insurance company before they know what's actually wrong — and that's how claims get denied or settled for half what they're worth. Here's the right order of operations.",
+           bg_image="/insurance-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -86,6 +89,12 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
           <p>30-minute inspection. Written photo report. No obligation.</p>
           <a href="/contact/" class="btn btn-primary">Book Inspection</a>
         </div>
+        <div class="aside-card download-card">
+          <span class="dl-badge-pill">Free PDF · 2 pages</span>
+          <h4>Storm Damage Checklist</h4>
+          <p>The 9-point inspection adjusters look for. Document damage correctly the first time.</p>
+          <a href="/storm-checklist/" class="btn btn-download">{DL_ICON}<span>Download Checklist</span></a>
+        </div>
         <div class="aside-card">
           <h4>Trust signals</h4>
           <ul>
@@ -100,11 +109,11 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
     <h2 style="margin-top:80px">Insurance claim FAQs</h2>
     <div class="faq-list">
-      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic">+</span></summary><div class="a">{a}</div></details>""" for q, a in ins_faqs]) + """
+      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">{a}</div></details>""" for q, a in ins_faqs]) + """
     </div>
   </div>
 </section>
-""" + cta_band("Storm damage? Don't call insurance yet.", "Book a free inspection first. We tell you honestly what you have before any claim is filed.", "Book a Free Inspection", "/contact/")
+""" + cta_band("Storm damage? Don't call insurance yet.", "Book a free inspection first. We tell you honestly what you have before any claim is filed.", "Book a Free Inspection", "/contact/", with_download=True)
 
     build("/insurance-claims/",
           "Roof Insurance Claim Help in Maryland | Arndt Construction",
@@ -125,7 +134,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 {crumbs_html([("Home", "/"), ("About", None)])}
 {page_hero("About Arndt Construction",
            "Family-owned. Maryland-based. Roof up.",
-           "Arndt Construction was founded by Nathaniel Arndt in Lusby, Maryland, to do contracting the way it should have been done all along — honestly, locally, and on time.")}
+           "Arndt Construction was founded by Nathaniel Arndt in Lusby, Maryland, to do contracting the way it should have been done all along — honestly, locally, and on time.",
+           bg_image="/about-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -203,7 +213,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 {crumbs_html([("Home", "/"), ("Contact", None)])}
 {page_hero("Contact",
            "Get a hard-honest estimate.",
-           "Tell us what's going on with the house. We'll be out within the week with a real number — and the photos to back it up.")}
+           "Tell us what's going on with the house. We'll be out within the week with a real number — and the photos to back it up.",
+           bg_image="/contact-hero.jpg")}
 
 <section id="contact-page">
   <div class="container">
@@ -267,7 +278,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
     body = f"""
 {crumbs_html([("Home", "/"), ("Reviews", None)])}
 {page_hero("Reviews", "What the neighbors say.",
-           "Verified five-star reviews from Maryland homeowners. Real names, real jobs, in their own words. Tap any review to read it on Facebook.")}
+           "Verified five-star reviews from Maryland homeowners. Real names, real jobs, in their own words. Tap any review to read it on Facebook.",
+           bg_image="/reviews-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -331,7 +343,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 {crumbs_html([("Home", "/"), ("Gallery", None)])}
 {page_hero("Recent work",
            "Real homes. Real before-and-afters.",
-           "A look at recent re-roofs, siding refreshes, and storm restorations from across Maryland. No stock photos — every shot is from a job we ran ourselves.")}
+           "A look at recent re-roofs, siding refreshes, and storm restorations from across Maryland. No stock photos — every shot is from a job we ran ourselves.",
+           bg_image="/gallery-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -355,7 +368,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 {crumbs_html([("Home", "/"), ("Service Area", None)])}
 {page_hero("Service Area",
            "Where we work.",
-           "Based in Lusby, MD, we serve Calvert County and the surrounding Southern Maryland region — residential and commercial. Don't see your town? Call us anyway. If we can't help, we'll point you to someone who can.")}
+           "Based in Lusby, MD, we serve Calvert County and the surrounding Southern Maryland region — residential and commercial. Don't see your town? Call us anyway. If we can't help, we'll point you to someone who can.",
+           bg_image="/service-area-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -477,7 +491,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 {crumbs_html([("Home", "/"), ("Learn", None)])}
 {page_hero("Learning Center",
            "Stories from the roof.",
-           "Field notes, storm-season guides, and education for Maryland homeowners. Written by people who actually do the work, not SEO writers who've never been on a ladder.")}
+           "Field notes, storm-season guides, and education for Maryland homeowners. Written by people who actually do the work, not SEO writers who've never been on a ladder.",
+           bg_image="/learn-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -596,12 +611,12 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
       <h2>FAQ</h2>
       <div class="faq-list">
-        """ + "\n        ".join([f"""<details class="faq"><summary>{q}<span class="ic">+</span></summary><div class="a">{a}</div></details>""" for q, a in article_storm_faqs]) + """
+        """ + "\n        ".join([f"""<details class="faq"><summary>{q}<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">{a}</div></details>""" for q, a in article_storm_faqs]) + """
       </div>
     </div>
   </div>
 </article>
-""" + cta_band("Storm damage on your home?", "Free inspection. Written photo report. No obligation.", "Book Inspection", "/contact/")
+""" + cta_band("Storm damage on your home?", "Free inspection. Written photo report. No obligation.", "Book Inspection", "/contact/", with_download=True)
 
     build("/learn/storm-damage-insurance-claim/",
           "How to File a Storm Damage Roof Insurance Claim in Maryland",
@@ -742,7 +757,7 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
     </div>
   </div>
 </article>
-""" + cta_band("Recent hail storm in your area?", "Free roof inspection. We tell you honestly whether you have a claim.", "Book Inspection", "/contact/")
+""" + cta_band("Recent hail storm in your area?", "Free roof inspection. We tell you honestly whether you have a claim.", "Book Inspection", "/contact/", with_download=True)
 
     build("/learn/hail-damage-warning-signs/",
           "Hail Damage on Your Roof: 7 Warning Signs | Arndt MD",
@@ -777,7 +792,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 {crumbs_html([("Home", "/"), ("Local Partners", None)])}
 {page_hero("Local Partners",
            "Trusted Maryland trades we recommend.",
-           "We're roofers and siders — but a healthy home depends on more than the envelope. Here are the local trades we trust to work alongside us in Calvert County. None of these are paid placements.")}
+           "We're roofers and siders — but a healthy home depends on more than the envelope. Here are the local trades we trust to work alongside us in Calvert County. None of these are paid placements.",
+           bg_image="/partners-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -837,9 +853,204 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
     build("/privacy/",
           "Privacy Policy | Arndt Construction",
-          "Privacy policy for the Arndt Construction website. What we collect, how we use it, your rights.",
+          "Privacy policy for the Arndt Construction website — what we collect through our estimate form, how we use it, what we never share, and how to request deletion.",
           body,
           schemas=[breadcrumbs([("Home", "/"), ("Privacy", "/privacy/")])])
+
+    # ============================================================
+    # STORM CHECKLIST (printable)
+    # ============================================================
+    def chk(idn, title, desc, photo):
+        return f"""
+        <div class="chk-item">
+          <input id="{idn}" type="checkbox" class="chk-box"/>
+          <label for="{idn}">
+            <span class="chk-title">{title}</span>
+            <span class="chk-desc">{desc}</span>
+            <span class="chk-photo"><span class="chk-photo-ico" aria-hidden="true">📸</span> Photo Required: {photo}</span>
+          </label>
+        </div>"""
+
+    phase1 = [
+        ("p1-1", "Check the Downspouts",
+         "Inspect base grading zones where metal gutters discharge. Scan for dense piles of loose asphalt structural shingle granules.",
+         "Close-up of loose granules piled at the downspout exit"),
+        ("p1-2", "Inspect Exterior Siding and Trim",
+         "Scan window metallic wraps, home vinyl cladding matrices, and garage doors for fresh wind dents, splitting, or debris impact scars.",
+         "Wide shot of dented framing, plus a close-up alongside a coin for physical scale"),
+        ("p1-3", "Scan for Missing Shingle Teeth",
+         "Observe structural valley horizons cleanly from lawn positions. Identify dark backing underlayment layers showing exposed deck profiles.",
+         "High-zoom focus snapshot pinpointing detached shingle slots"),
+    ]
+    phase2 = [
+        ("p2-1", "The Daylight Beam Check",
+         "Enter the secondary attic floor deck array securely during full peak brightness hours. Keep panels dark and trace wood patterns upward.",
+         "Image capturing exterior light pinpricks shining through roof timber panels"),
+        ("p2-2", "Inspect Underlying Structural Rafters",
+         "Guide your flashlight directly across main support rafters. Inspect lumber for damp tracking configurations, active wet beads, or mold spores.",
+         "Sharp photo logging water trace marks tracking down support rafters"),
+        ("p2-3", "Track Interior Wall-to-Ceiling Plaster Hubs",
+         "Trace top sheetrock joints near second-story frame levels. Spot swelling paints, texturing separations, or dark amber moisture stains.",
+         "Close-up of internal wall moisture tracks or blistering drywall paint"),
+    ]
+    phase3 = [
+        ("p3-1", "Record the Storm Event Details",
+         "Write down the exact date, time, and type of weather event. Pull the NOAA or local news report confirming wind speeds, hail size, or gust duration in your zip code.",
+         "Screenshot of the NOAA Storm Events Database entry for your county on the event date"),
+        ("p3-2", "Pull Your Homeowner Policy and Deductible",
+         "Locate your declarations page. Note your deductible, wind/hail deductible (often higher and separate), and the claims-reporting window required by your carrier.",
+         "Photo of the policy declarations page and the wind/hail deductible section"),
+        ("p3-3", "Log Estimates, Calls, and Adjuster Visits",
+         "Start a single-page timeline. Every call, every emailed estimate, every adjuster visit date — written in one place. This is what wins supplements when scope disputes happen.",
+         "Photograph of the running claim timeline before each adjuster visit"),
+    ]
+
+    body = f"""
+{crumbs_html([("Home", "/"), ("Learn", "/learn/"), ("Storm Checklist", None)])}
+<div class="checklist-page">
+  <div class="container" style="max-width:1120px">
+
+    <header class="cl-header">
+      <div class="cl-header-row">
+        <div>
+          <div class="cl-eyebrow"><span class="cl-pulse"></span>Southern Maryland Storm Resource</div>
+          <h1 class="cl-h1">Free Storm Damage<br/>&amp; Insurance Checklist</h1>
+          <p class="cl-sub">A 2-page PDF guide from Arndt Construction <span class="cl-sep">|</span> MHIC #115973</p>
+        </div>
+        <div class="cl-contact">
+          <p class="cl-contact-eyebrow">Active Storm Damage?</p>
+          <a href="{PHONE_HREF}" class="cl-contact-phone">{PHONE}</a>
+          <p class="cl-contact-sub">We answer the phone live, Mon–Sun, 9–5</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="gate-grid">
+      <div class="gate-left">
+        <span class="eyebrow">What's inside</span>
+        <h2 style="margin-top:14px">The 9-point checklist Maryland adjusters look for.</h2>
+        <p class="gate-lede">After a wind, hail, or fallen-tree event, the first 48 hours decide whether your insurance claim pays out — or gets denied. This is the same checklist we hand to every Calvert County homeowner who calls us after a storm.</p>
+
+        <ul class="gate-list">
+          <li>
+            <strong>Phase 1 · Immediate Ground Inspection</strong>
+            Downspouts, siding, missing shingles — exactly what to photograph from the ground.
+          </li>
+          <li>
+            <strong>Phase 2 · Attic &amp; Ceiling Audit</strong>
+            The daylight beam check, rafter inspection, and moisture-tracking method.
+          </li>
+          <li>
+            <strong>Phase 3 · Adjuster Case Record</strong>
+            How to log the storm event, your policy, and every estimate so the adjuster has no excuse to under-pay.
+          </li>
+        </ul>
+
+        <div class="gate-trust">
+          <span>📄 2 printable pages</span>
+          <span>✓ Checkboxes &amp; photo prompts</span>
+          <span>✓ Free, no spam</span>
+        </div>
+      </div>
+
+      <aside class="gate-form-wrap">
+        <form class="gate-form" action="https://formsubmit.co/{EMAIL}" method="POST">
+          <input type="hidden" name="_subject" value="Storm Checklist Download Request">
+          <input type="hidden" name="_next" value="{BASE_URL}/storm-checklist/thanks/">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+          <h3 class="gate-form-title">Get the free PDF.</h3>
+          <p class="gate-form-sub">We'll email the checklist to you and follow up only if you ask us to.</p>
+
+          <div class="gate-field">
+            <label for="gf-fn">First name</label>
+            <input id="gf-fn" name="First name" type="text" required autocomplete="given-name"/>
+          </div>
+          <div class="gate-field">
+            <label for="gf-ln">Last name</label>
+            <input id="gf-ln" name="Last name" type="text" required autocomplete="family-name"/>
+          </div>
+          <div class="gate-field">
+            <label for="gf-em">Email</label>
+            <input id="gf-em" name="Email" type="email" required autocomplete="email"/>
+          </div>
+          <div class="gate-field">
+            <label for="gf-ph">Phone (optional)</label>
+            <input id="gf-ph" name="Phone" type="tel" autocomplete="tel"/>
+          </div>
+          <div class="gate-field">
+            <label for="gf-zip">Property ZIP code</label>
+            <input id="gf-zip" name="ZIP" type="text" inputmode="numeric" pattern="[0-9]{{5}}" autocomplete="postal-code"/>
+          </div>
+          <div class="gate-field">
+            <label for="gf-evt">Storm event date (if any)</label>
+            <input id="gf-evt" name="Storm event date" type="date"/>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg gate-submit">Send me the PDF</button>
+          <p class="gate-privacy">By submitting, you agree to be contacted about your inquiry. We don't sell your info. See <a href="/privacy/">privacy policy</a>.</p>
+        </form>
+      </aside>
+    </section>
+
+    <section class="gate-warn">
+      <strong>⚠ Safety Warning:</strong> Never walk directly on a damaged or wet roof. Conduct all inspections from ground level, balconies, or windows. If active leaks are threatening interior damage, call <a href="{PHONE_HREF}">{PHONE}</a> for emergency tarping before anything else.
+    </section>
+
+  </div>
+</div>
+"""
+
+    build("/storm-checklist/",
+          "Free Storm Damage Checklist PDF for Maryland Homeowners",
+          "Free downloadable PDF: 9-point storm damage roof inspection and insurance claim checklist from Arndt Construction (MHIC #115973). What to photograph, document, and claim.",
+          body,
+          schemas=[breadcrumbs([("Home", "/"), ("Learn", "/learn/"), ("Storm Checklist", "/storm-checklist/")])])
+
+    # ----- THANK YOU / AUTO-DOWNLOAD PAGE -----
+    body = f"""
+{crumbs_html([("Home", "/"), ("Learn", "/learn/"), ("Storm Checklist", "/storm-checklist/"), ("Download", None)])}
+<div class="checklist-page">
+  <div class="container" style="max-width:700px;text-align:center">
+    <span class="eyebrow">Thanks — your download is starting</span>
+    <h1 style="font-family:var(--font-display);font-weight:700;font-size:clamp(2rem,1.4rem+2.4vw,3.2rem);line-height:1.05;text-transform:uppercase;color:#fff;margin:18px 0 20px">
+      Check your email and your<br/>browser downloads.
+    </h1>
+    <p style="color:#d4d4d4;font-size:17px;line-height:1.6;max-width:48ch;margin:0 auto 32px">
+      The PDF should start downloading automatically. If it doesn't, click the button below. We'll also email a copy to the address you provided.
+    </p>
+    <p>
+      <a id="dl-link" href="/arndt-storm-checklist.pdf" download class="btn btn-primary btn-lg">Download the Checklist (PDF)</a>
+    </p>
+    <p style="margin-top:48px;color:#a8a8a8;font-size:14px;line-height:1.6;max-width:46ch;margin-left:auto;margin-right:auto">
+      <strong style="color:#fff">Next step:</strong> If you have visible damage, call us at <a href="{PHONE_HREF}" style="color:var(--accent-2);text-decoration:underline">{PHONE}</a> for a free inspection before you file your claim. Most homeowners file too early and get under-paid by thousands.
+    </p>
+    <div style="margin-top:48px;padding-top:24px;border-top:1px solid #2a2a2a">
+      <p style="margin:0 0 12px"><a href="/storm-damage/" style="color:var(--accent-2);text-decoration:underline;text-underline-offset:3px">Storm damage repair services</a></p>
+      <p style="margin:0 0 12px"><a href="/insurance-claims/" style="color:var(--accent-2);text-decoration:underline;text-underline-offset:3px">How to file a roof insurance claim</a></p>
+      <p style="margin:0"><a href="/contact/" style="color:var(--accent-2);text-decoration:underline;text-underline-offset:3px">Book a free inspection</a></p>
+    </div>
+  </div>
+</div>
+<script>
+  // Auto-trigger download on landing
+  setTimeout(function(){{
+    var a = document.createElement('a');
+    a.href = '/arndt-storm-checklist.pdf';
+    a.download = 'Arndt-Storm-Checklist.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }}, 600);
+</script>
+"""
+    build("/storm-checklist/thanks/",
+          "Download Storm Checklist | Arndt Construction",
+          "Your free Maryland storm damage checklist PDF is downloading. Open it, fill it in, then call (443) 624-7508 for a free inspection if damage is visible.",
+          body,
+          schemas=[breadcrumbs([("Home", "/"), ("Learn", "/learn/"), ("Storm Checklist", "/storm-checklist/"), ("Download", "/storm-checklist/thanks/")])])
 
     # ============================================================
     # 404

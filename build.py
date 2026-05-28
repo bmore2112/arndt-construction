@@ -105,6 +105,13 @@ def service_schema(name, description, slug):
         "provider": {"@id": BASE_URL + "/#business"},
         "areaServed": ["Calvert County, MD", "St. Mary's County, MD", "Charles County, MD",
                        "Anne Arundel County, MD", "Prince George's County, MD"],
+        "serviceType": name,
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5.0",
+            "reviewCount": "6",
+            "bestRating": "5",
+        },
     }
 
 
@@ -183,13 +190,14 @@ def nav_html():
     </a>
     <div class="nav-links" id="primary-nav" role="navigation" aria-label="Primary">
       <div class="nav-dropdown">
-        <a href="/roofing/" class="nav-dropdown-toggle">Services <span class="caret">▾</span></a>
-        <div class="nav-dropdown-menu">
-          <a href="/roofing/">Roofing</a>
+        <button class="nav-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">Services <svg class="caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-dropdown-menu" role="menu">
+          <a href="/roofing/">All Roofing Services</a>
           <a href="/siding/">Siding</a>
           <a href="/storm-damage/">Storm Damage</a>
           <a href="/gutters/">Gutters</a>
           <a href="/insurance-claims/">Insurance Claims</a>
+          <a href="/storm-checklist/">Storm Checklist</a>
         </div>
       </div>
       <a href="/service-area/">Service Area</a>
@@ -238,6 +246,7 @@ def footer_html():
           <li><a href="/storm-damage/">Storm Damage Repair</a></li>
           <li><a href="/gutters/">Seamless Gutters</a></li>
           <li><a href="/insurance-claims/">Insurance Claim Help</a></li>
+          <li><a href="/storm-checklist/">Storm Damage Checklist</a></li>
         </ul>
       </div>
       <div class="foot-col">
@@ -308,7 +317,16 @@ def build(path, title, description, body, schemas=None, og_type="website"):
 # ============================================================
 # SHARED FRAGMENTS
 # ============================================================
-def cta_band(headline="Ready to schedule your free inspection?", sub="Roofing, siding, gutters, or storm damage — call or send a message. We answer same business day.", button_text="Book a Free Inspection", button_href="/contact/"):
+DOWNLOAD_ICON = '<svg class="dl-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>'
+
+
+def download_btn(text="Download Storm Damage Checklist", href="/storm-checklist/", big=True):
+    cls = "btn btn-download" + (" btn-lg" if big else "")
+    return f'<a href="{href}" class="{cls}">{DOWNLOAD_ICON}<span>{text}</span><span class="dl-badge">Free PDF</span></a>'
+
+
+def cta_band(headline="Ready to schedule your free inspection?", sub="Roofing, siding, gutters, or storm damage — call or send a message. We answer same business day.", button_text="Book a Free Inspection", button_href="/contact/", with_download=False):
+    download_html = download_btn() if with_download else ""
     return f"""<section class="cta-band">
   <div class="container">
     <div class="cta-band-inner reveal">
@@ -318,6 +336,7 @@ def cta_band(headline="Ready to schedule your free inspection?", sub="Roofing, s
       </div>
       <div class="cta-band-actions">
         <a href="{button_href}" class="btn btn-primary btn-lg">{button_text}</a>
+        {download_html}
         <a href="{PHONE_HREF}" class="btn btn-ghost btn-lg">Call {PHONE}</a>
       </div>
     </div>
@@ -439,7 +458,10 @@ HOME_BODY = """
         <p class="ins-lead reveal">
           Most homeowners call their insurance company before they know what's actually wrong with the roof. That's how claims get denied — or settled for half what they're worth. Here's the right order of operations.
         </p>
-        <a href="/insurance-claims/" class="btn btn-primary btn-lg reveal" style="margin-top:36px">Read the full guide</a>
+        <div class="reveal" style="margin-top:36px;display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+          <a href="/insurance-claims/" class="btn btn-primary btn-lg">Read the full guide</a>
+          <a href="/storm-checklist/" class="btn btn-download btn-lg"><svg class="dl-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span>Download Storm Damage Checklist</span><span class="dl-badge">Free PDF</span></a>
+        </div>
         <div class="badges reveal" style="margin-top:32px">
           <span class="badge"><strong>Licensed</strong> · MHIC #115973</span>
           <span class="badge"><strong>Bonded</strong></span>
@@ -566,7 +588,7 @@ def main():
     # Service, area, learn, etc. — generated by build_pages_2.py to keep this script readable
     # (build_pages_2 imports from this file)
     import build_pages_2
-    build_pages_2.run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS)
+    build_pages_2.run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS, download_btn=download_btn)
 
     print("Done.")
 

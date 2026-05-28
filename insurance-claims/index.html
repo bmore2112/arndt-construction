@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Insurance Claim Assistance","description":"Storm damage insurance claim assistance \u2014 free inspection, written photo report, Xactimate estimates, and on-site adjuster meetings.","url":"https://bmore2112.github.io/arndt-construction/insurance-claims/","provider":{"@id":"https://bmore2112.github.io/arndt-construction/#business"},"areaServed":["Calvert County, MD","St. Mary's County, MD","Charles County, MD","Anne Arundel County, MD","Prince George's County, MD"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Insurance Claim Assistance","description":"Storm damage insurance claim assistance \u2014 free inspection, written photo report, Xactimate estimates, and on-site adjuster meetings.","url":"https://bmore2112.github.io/arndt-construction/insurance-claims/","provider":{"@id":"https://bmore2112.github.io/arndt-construction/#business"},"areaServed":["Calvert County, MD","St. Mary's County, MD","Charles County, MD","Anne Arundel County, MD","Prince George's County, MD"],"serviceType":"Insurance Claim Assistance","aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"6","bestRating":"5"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Should I call my insurance company or a roofer first?","acceptedAnswer":{"@type":"Answer","text":"A licensed local roofer first. Calling insurance before you know what's actually damaged is the single most common mistake \u2014 claims get denied or under-paid because the homeowner couldn't describe what was wrong. A free inspection takes 30 minutes and gives you the documentation to file with."}},{"@type":"Question","name":"Does filing a claim raise my premium?","acceptedAnswer":{"@type":"Answer","text":"It depends on your carrier and your claim history. In Maryland, a single weather-related claim typically does not directly raise rates, but multiple claims in a short window can. The bigger risk is filing a claim that gets denied \u2014 that still goes on your record. This is exactly why a free inspection first matters."}},{"@type":"Question","name":"What if my claim is denied?","acceptedAnswer":{"@type":"Answer","text":"Denials are not final. If we documented damage that meets your policy's threshold and the adjuster missed it, we re-supplement the claim with our photo report and Xactimate-line estimate. Many denials reverse on supplement when the contractor is at the table."}},{"@type":"Question","name":"Do I have to use the contractor my insurance recommends?","acceptedAnswer":{"@type":"Answer","text":"No. Maryland law gives you the right to choose your own contractor. Insurance company preferred-vendor programs benefit the insurer, not always you. Pick a licensed local contractor you trust."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://bmore2112.github.io/arndt-construction/"},{"@type":"ListItem","position":2,"name":"Insurance Claims","item":"https://bmore2112.github.io/arndt-construction/insurance-claims/"}]}</script>
 </head>
@@ -37,13 +37,14 @@
     </a>
     <div class="nav-links" id="primary-nav" role="navigation" aria-label="Primary">
       <div class="nav-dropdown">
-        <a href="/roofing/" class="nav-dropdown-toggle">Services <span class="caret">▾</span></a>
-        <div class="nav-dropdown-menu">
-          <a href="/roofing/">Roofing</a>
+        <button class="nav-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">Services <svg class="caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-dropdown-menu" role="menu">
+          <a href="/roofing/">All Roofing Services</a>
           <a href="/siding/">Siding</a>
           <a href="/storm-damage/">Storm Damage</a>
           <a href="/gutters/">Gutters</a>
           <a href="/insurance-claims/">Insurance Claims</a>
+          <a href="/storm-checklist/">Storm Checklist</a>
         </div>
       </div>
       <a href="/service-area/">Service Area</a>
@@ -71,11 +72,14 @@
 </nav>
 
 <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Insurance Claims</span></nav>
-<header class="page-hero">
+<header class="page-hero has-bg">
+  <div class="page-hero-media" style="background-image:url('/insurance-hero.jpg');" aria-hidden="true"></div>
   <div class="container">
-    <span class="eyebrow">Insurance Claims · Storm Damage</span>
-    <h1>Roof Insurance Claim Help in Maryland</h1>
-    <p class="page-hero-lede">Storm damage? Get inspected first. Most homeowners call their insurance company before they know what's actually wrong — and that's how claims get denied or settled for half what they're worth. Here's the right order of operations.</p>
+    <div class="page-hero-content">
+      <span class="eyebrow">Insurance Claims · Storm Damage</span>
+      <h1>Roof Insurance Claim Help in Maryland</h1>
+      <p class="page-hero-lede">Storm damage? Get inspected first. Most homeowners call their insurance company before they know what's actually wrong — and that's how claims get denied or settled for half what they're worth. Here's the right order of operations.</p>
+    </div>
   </div>
 </header>
 
@@ -142,6 +146,12 @@
           <p>30-minute inspection. Written photo report. No obligation.</p>
           <a href="/contact/" class="btn btn-primary">Book Inspection</a>
         </div>
+        <div class="aside-card download-card">
+          <span class="dl-badge-pill">Free PDF · 2 pages</span>
+          <h4>Storm Damage Checklist</h4>
+          <p>The 9-point inspection adjusters look for. Document damage correctly the first time.</p>
+          <a href="/storm-checklist/" class="btn btn-download"><svg class="dl-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span>Download Checklist</span></a>
+        </div>
         <div class="aside-card">
           <h4>Trust signals</h4>
           <ul>
@@ -156,10 +166,10 @@
 
     <h2 style="margin-top:80px">Insurance claim FAQs</h2>
     <div class="faq-list">
-      <details class="faq"><summary>Should I call my insurance company or a roofer first?<span class="ic">+</span></summary><div class="a">A licensed local roofer first. Calling insurance before you know what's actually damaged is the single most common mistake — claims get denied or under-paid because the homeowner couldn't describe what was wrong. A free inspection takes 30 minutes and gives you the documentation to file with.</div></details>
-      <details class="faq"><summary>Does filing a claim raise my premium?<span class="ic">+</span></summary><div class="a">It depends on your carrier and your claim history. In Maryland, a single weather-related claim typically does not directly raise rates, but multiple claims in a short window can. The bigger risk is filing a claim that gets denied — that still goes on your record. This is exactly why a free inspection first matters.</div></details>
-      <details class="faq"><summary>What if my claim is denied?<span class="ic">+</span></summary><div class="a">Denials are not final. If we documented damage that meets your policy's threshold and the adjuster missed it, we re-supplement the claim with our photo report and Xactimate-line estimate. Many denials reverse on supplement when the contractor is at the table.</div></details>
-      <details class="faq"><summary>Do I have to use the contractor my insurance recommends?<span class="ic">+</span></summary><div class="a">No. Maryland law gives you the right to choose your own contractor. Insurance company preferred-vendor programs benefit the insurer, not always you. Pick a licensed local contractor you trust.</div></details>
+      <details class="faq"><summary>Should I call my insurance company or a roofer first?<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">A licensed local roofer first. Calling insurance before you know what's actually damaged is the single most common mistake — claims get denied or under-paid because the homeowner couldn't describe what was wrong. A free inspection takes 30 minutes and gives you the documentation to file with.</div></details>
+      <details class="faq"><summary>Does filing a claim raise my premium?<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">It depends on your carrier and your claim history. In Maryland, a single weather-related claim typically does not directly raise rates, but multiple claims in a short window can. The bigger risk is filing a claim that gets denied — that still goes on your record. This is exactly why a free inspection first matters.</div></details>
+      <details class="faq"><summary>What if my claim is denied?<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">Denials are not final. If we documented damage that meets your policy's threshold and the adjuster missed it, we re-supplement the claim with our photo report and Xactimate-line estimate. Many denials reverse on supplement when the contractor is at the table.</div></details>
+      <details class="faq"><summary>Do I have to use the contractor my insurance recommends?<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">No. Maryland law gives you the right to choose your own contractor. Insurance company preferred-vendor programs benefit the insurer, not always you. Pick a licensed local contractor you trust.</div></details>
     </div>
   </div>
 </section>
@@ -172,6 +182,7 @@
       </div>
       <div class="cta-band-actions">
         <a href="/contact/" class="btn btn-primary btn-lg">Book a Free Inspection</a>
+        <a href="/storm-checklist/" class="btn btn-download btn-lg"><svg class="dl-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg><span>Download Storm Damage Checklist</span><span class="dl-badge">Free PDF</span></a>
         <a href="tel:4436247508" class="btn btn-ghost btn-lg">Call (443) 624-7508</a>
       </div>
     </div>
@@ -194,6 +205,7 @@
           <li><a href="/storm-damage/">Storm Damage Repair</a></li>
           <li><a href="/gutters/">Seamless Gutters</a></li>
           <li><a href="/insurance-claims/">Insurance Claim Help</a></li>
+          <li><a href="/storm-checklist/">Storm Damage Checklist</a></li>
         </ul>
       </div>
       <div class="foot-col">

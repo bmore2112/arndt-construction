@@ -1,18 +1,29 @@
 """All non-home pages. Run via build.py's main()."""
 
+DL_ICON = '<svg class="dl-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>'
 
-def page_hero(eyebrow, h1, lede=""):
+
+def page_hero(eyebrow, h1, lede="", bg_image=None):
     lede_html = f'<p class="page-hero-lede">{lede}</p>' if lede else ""
-    return f"""<header class="page-hero">
+    cls = "page-hero"
+    if bg_image:
+        cls += " has-bg"
+        bg_div = f'<div class="page-hero-media" style="background-image:url(\'{bg_image}\');" aria-hidden="true"></div>'
+    else:
+        bg_div = '<div class="page-hero-media is-placeholder" aria-hidden="true"></div>'
+    return f"""<header class="{cls}">
+  {bg_div}
   <div class="container">
-    <span class="eyebrow">{eyebrow}</span>
-    <h1>{h1}</h1>
-    {lede_html}
+    <div class="page-hero-content">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1>{h1}</h1>
+      {lede_html}
+    </div>
   </div>
 </header>"""
 
 
-def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS):
+def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS, download_btn=None):
 
     # ============================================================
     # ROOFING
@@ -30,7 +41,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
     body = f"""
 {crumbs_html([("Home", "/"), ("Services", "/roofing/"), ("Roofing", None)])}
 {page_hero("Roofing", "Roof Replacement &amp; Repair in Calvert County, MD",
-           "Architectural asphalt, metal, and flat-roof systems for residential and commercial properties. Free inspections, code-compliant installs, and a written workmanship warranty.")}
+           "Architectural asphalt, metal, and flat-roof systems for residential and commercial properties. Free inspections, code-compliant installs, and a written workmanship warranty.",
+           bg_image="/arndt-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -88,7 +100,7 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
     <h2 style="margin-top:80px">Frequently asked questions</h2>
     <div class="faq-list">
-      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic">+</span></summary><div class="a">{a}</div></details>""" for q, a in roofing_faqs]) + """
+      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">{a}</div></details>""" for q, a in roofing_faqs]) + """
     </div>
   </div>
 </section>
@@ -120,7 +132,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
     body = f"""
 {crumbs_html([("Home", "/"), ("Services", "/roofing/"), ("Siding", None)])}
 {page_hero("Siding", "Vinyl, Fiber Cement &amp; Cedar Shake Siding in Maryland",
-           "James Hardie, CertainTeed, and traditional cedar shake — installed across Calvert County and Southern Maryland. Curb appeal and thermal performance, together.")}
+           "James Hardie, CertainTeed, and traditional cedar shake — installed across Calvert County and Southern Maryland. Curb appeal and thermal performance, together.",
+           bg_image="/svc-siding.png")}
 
 <section class="prose">
   <div class="container">
@@ -169,7 +182,7 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
     <h2 style="margin-top:80px">Siding FAQs</h2>
     <div class="faq-list">
-      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic">+</span></summary><div class="a">{a}</div></details>""" for q, a in siding_faqs]) + """
+      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">{a}</div></details>""" for q, a in siding_faqs]) + """
     </div>
   </div>
 </section>
@@ -201,7 +214,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
     body = f"""
 {crumbs_html([("Home", "/"), ("Services", "/roofing/"), ("Storm Damage", None)])}
 {page_hero("Storm Damage", "Storm Damage Roof Repair in Maryland — Same-Day Response",
-           "Hail, wind, and fallen-tree damage. We answer the phone, show up fast, and document everything correctly for your insurance claim.")}
+           "Hail, wind, and fallen-tree damage. We answer the phone, show up fast, and document everything correctly for your insurance claim.",
+           bg_image="/svc-storm.png")}
 
 <section class="prose">
   <div class="container">
@@ -243,6 +257,12 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
           <p>Active leak? Call us first.</p>
           <a href="{PHONE_HREF}" class="btn btn-primary">{PHONE}</a>
         </div>
+        <div class="aside-card download-card">
+          <span class="dl-badge-pill">Free PDF · 2 pages</span>
+          <h4>Storm Damage Checklist</h4>
+          <p>The 9-point inspection adjusters look for. Print it, fill it out, claim with confidence.</p>
+          <a href="/storm-checklist/" class="btn btn-download">{DL_ICON}<span>Download Checklist</span></a>
+        </div>
         <div class="aside-card">
           <h4>Storm damage resources</h4>
           <ul>
@@ -256,15 +276,15 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
     <h2 style="margin-top:80px">Storm damage FAQs</h2>
     <div class="faq-list">
-      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic">+</span></summary><div class="a">{a}</div></details>""" for q, a in storm_faqs]) + """
+      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">{a}</div></details>""" for q, a in storm_faqs]) + """
     </div>
   </div>
 </section>
-""" + cta_band("Active storm damage?", "Same business day response. Free inspection. We handle insurance documentation.", "Get an Emergency Inspection", "/contact/")
+""" + cta_band("Active storm damage?", "Same business day response. Free inspection. We handle insurance documentation.", "Get an Emergency Inspection", "/contact/", with_download=True)
 
     build("/storm-damage/",
           "Storm Damage Roof Repair Maryland | Arndt Construction",
-          "Hail, wind, and fallen-tree damage roof repair in Calvert County and Southern Maryland. Emergency tarping, insurance documentation, same-day response. Licensed MHIC #115973.",
+          "Hail, wind, and fallen-tree roof repair across Calvert County and Southern Maryland. Same-day response, emergency tarping, and full insurance documentation.",
           body,
           schemas=[
               service_schema("Storm Damage Roof Repair",
@@ -288,7 +308,8 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
     body = f"""
 {crumbs_html([("Home", "/"), ("Services", "/roofing/"), ("Gutters", None)])}
 {page_hero("Gutters", "Seamless Gutter Installation in Calvert County, MD",
-           "Custom-bent seamless aluminum gutters with hidden hangers and professional leaf guards — protecting foundations, siding, and landscaping across Southern Maryland.")}
+           "Custom-bent seamless aluminum gutters with hidden hangers and professional leaf guards — protecting foundations, siding, and landscaping across Southern Maryland.",
+           bg_image="/svc-gutters-hero.jpg")}
 
 <section class="prose">
   <div class="container">
@@ -334,7 +355,7 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
     <h2 style="margin-top:80px">Gutter FAQs</h2>
     <div class="faq-list">
-      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic">+</span></summary><div class="a">{a}</div></details>""" for q, a in gutters_faqs]) + """
+      """ + "\n      ".join([f"""<details class="faq"><summary>{q}<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">{a}</div></details>""" for q, a in gutters_faqs]) + """
     </div>
   </div>
 </section>
@@ -354,4 +375,4 @@ def run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_h
 
     # Continued in build_pages_3 to keep file readable
     import build_pages_3
-    build_pages_3.run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, page_hero, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS)
+    build_pages_3.run(build, breadcrumbs, service_schema, article_schema, faq_schema, crumbs_html, cta_band, page_hero, REVIEW_MODAL, BASE_URL, SITE_NAME, PHONE, PHONE_HREF, EMAIL, ADDRESS, LICENSE, LOCAL_BUSINESS, download_btn=download_btn)

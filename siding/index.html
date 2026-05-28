@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Siding Installation","description":"Vinyl, fiber cement, and cedar shake siding installation across Calvert County and Southern Maryland.","url":"https://bmore2112.github.io/arndt-construction/siding/","provider":{"@id":"https://bmore2112.github.io/arndt-construction/#business"},"areaServed":["Calvert County, MD","St. Mary's County, MD","Charles County, MD","Anne Arundel County, MD","Prince George's County, MD"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Siding Installation","description":"Vinyl, fiber cement, and cedar shake siding installation across Calvert County and Southern Maryland.","url":"https://bmore2112.github.io/arndt-construction/siding/","provider":{"@id":"https://bmore2112.github.io/arndt-construction/#business"},"areaServed":["Calvert County, MD","St. Mary's County, MD","Charles County, MD","Anne Arundel County, MD","Prince George's County, MD"],"serviceType":"Siding Installation","aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"6","bestRating":"5"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How long does siding installation take?","acceptedAnswer":{"@type":"Answer","text":"Most single-family vinyl re-sides take 3-5 days. Fiber cement (Hardie) takes 5-7 days. We protect landscaping and clean up daily."}},{"@type":"Question","name":"Vinyl, fiber cement, or cedar \u2014 which is right for my home?","acceptedAnswer":{"@type":"Answer","text":"Vinyl is the most cost-effective and lowest-maintenance choice. Fiber cement (James Hardie) lasts longest and has the most premium look for the cost. Cedar shake is the right answer for historic or coastal homes where character matters."}},{"@type":"Question","name":"Can siding improve energy efficiency?","acceptedAnswer":{"@type":"Answer","text":"Yes, particularly when paired with rigid foam insulation behind the siding. Insulated vinyl and house-wrap improvements typically deliver measurable savings on heating and cooling bills."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://bmore2112.github.io/arndt-construction/"},{"@type":"ListItem","position":2,"name":"Siding","item":"https://bmore2112.github.io/arndt-construction/siding/"}]}</script>
 </head>
@@ -37,13 +37,14 @@
     </a>
     <div class="nav-links" id="primary-nav" role="navigation" aria-label="Primary">
       <div class="nav-dropdown">
-        <a href="/roofing/" class="nav-dropdown-toggle">Services <span class="caret">▾</span></a>
-        <div class="nav-dropdown-menu">
-          <a href="/roofing/">Roofing</a>
+        <button class="nav-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">Services <svg class="caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="nav-dropdown-menu" role="menu">
+          <a href="/roofing/">All Roofing Services</a>
           <a href="/siding/">Siding</a>
           <a href="/storm-damage/">Storm Damage</a>
           <a href="/gutters/">Gutters</a>
           <a href="/insurance-claims/">Insurance Claims</a>
+          <a href="/storm-checklist/">Storm Checklist</a>
         </div>
       </div>
       <a href="/service-area/">Service Area</a>
@@ -71,11 +72,14 @@
 </nav>
 
 <nav class="crumbs container" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/roofing/">Services</a> / <span aria-current="page">Siding</span></nav>
-<header class="page-hero">
+<header class="page-hero has-bg">
+  <div class="page-hero-media" style="background-image:url('/svc-siding.png');" aria-hidden="true"></div>
   <div class="container">
-    <span class="eyebrow">Siding</span>
-    <h1>Vinyl, Fiber Cement &amp; Cedar Shake Siding in Maryland</h1>
-    <p class="page-hero-lede">James Hardie, CertainTeed, and traditional cedar shake — installed across Calvert County and Southern Maryland. Curb appeal and thermal performance, together.</p>
+    <div class="page-hero-content">
+      <span class="eyebrow">Siding</span>
+      <h1>Vinyl, Fiber Cement &amp; Cedar Shake Siding in Maryland</h1>
+      <p class="page-hero-lede">James Hardie, CertainTeed, and traditional cedar shake — installed across Calvert County and Southern Maryland. Curb appeal and thermal performance, together.</p>
+    </div>
   </div>
 </header>
 
@@ -126,9 +130,9 @@
 
     <h2 style="margin-top:80px">Siding FAQs</h2>
     <div class="faq-list">
-      <details class="faq"><summary>How long does siding installation take?<span class="ic">+</span></summary><div class="a">Most single-family vinyl re-sides take 3-5 days. Fiber cement (Hardie) takes 5-7 days. We protect landscaping and clean up daily.</div></details>
-      <details class="faq"><summary>Vinyl, fiber cement, or cedar — which is right for my home?<span class="ic">+</span></summary><div class="a">Vinyl is the most cost-effective and lowest-maintenance choice. Fiber cement (James Hardie) lasts longest and has the most premium look for the cost. Cedar shake is the right answer for historic or coastal homes where character matters.</div></details>
-      <details class="faq"><summary>Can siding improve energy efficiency?<span class="ic">+</span></summary><div class="a">Yes, particularly when paired with rigid foam insulation behind the siding. Insulated vinyl and house-wrap improvements typically deliver measurable savings on heating and cooling bills.</div></details>
+      <details class="faq"><summary>How long does siding installation take?<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">Most single-family vinyl re-sides take 3-5 days. Fiber cement (Hardie) takes 5-7 days. We protect landscaping and clean up daily.</div></details>
+      <details class="faq"><summary>Vinyl, fiber cement, or cedar — which is right for my home?<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">Vinyl is the most cost-effective and lowest-maintenance choice. Fiber cement (James Hardie) lasts longest and has the most premium look for the cost. Cedar shake is the right answer for historic or coastal homes where character matters.</div></details>
+      <details class="faq"><summary>Can siding improve energy efficiency?<span class="ic"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></summary><div class="a">Yes, particularly when paired with rigid foam insulation behind the siding. Insulated vinyl and house-wrap improvements typically deliver measurable savings on heating and cooling bills.</div></details>
     </div>
   </div>
 </section>
@@ -141,6 +145,7 @@
       </div>
       <div class="cta-band-actions">
         <a href="/contact/" class="btn btn-primary btn-lg">Book a Free Estimate</a>
+        
         <a href="tel:4436247508" class="btn btn-ghost btn-lg">Call (443) 624-7508</a>
       </div>
     </div>
@@ -163,6 +168,7 @@
           <li><a href="/storm-damage/">Storm Damage Repair</a></li>
           <li><a href="/gutters/">Seamless Gutters</a></li>
           <li><a href="/insurance-claims/">Insurance Claim Help</a></li>
+          <li><a href="/storm-checklist/">Storm Damage Checklist</a></li>
         </ul>
       </div>
       <div class="foot-col">

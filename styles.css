@@ -342,8 +342,10 @@
   .faq summary:hover{color:var(--accent-2)}
   .faq .ic{
     width:36px;height:36px;border:1px solid var(--line-strong);border-radius:50%;
-    display:grid;place-items:center;color:var(--ink);flex-shrink:0;transition:transform var(--t-norm), background var(--t-fast);
+    display:inline-flex;align-items:center;justify-content:center;
+    color:var(--ink);flex-shrink:0;transition:transform var(--t-norm), background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
   }
+  .faq .ic svg{width:14px;height:14px;display:block}
   .faq[open] .ic{transform:rotate(45deg);background:var(--accent);color:#0a0a0a;border-color:var(--accent)}
   .faq .a{padding:0 60px 32px 0;color:#d4d4d4;font-size:16.5px;max-width:78ch;line-height:1.7;font-weight:400}
 
@@ -567,12 +569,37 @@
 
 /* nav dropdown */
 .nav-dropdown{position:relative}
-.nav-dropdown-toggle .caret{font-size:9px;margin-left:4px;opacity:.7;transition:transform var(--t-fast)}
-.nav-dropdown:hover .nav-dropdown-toggle .caret{transform:translateY(2px)}
+.nav-dropdown-toggle{
+  position:relative;
+  display:inline-flex;align-items:center;gap:8px;
+  background:none;border:0;padding:6px 0;margin:0;cursor:pointer;
+  font-family:var(--font-display);
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#d0d0d0;
+  line-height:1.2;
+  transition:color var(--t-fast);
+}
+.nav-dropdown-toggle::before{
+  content:"";position:absolute;top:100%;left:-20px;right:-20px;height:24px;
+  background:transparent;
+}
+.nav-dropdown-toggle .caret{transition:transform var(--t-fast);opacity:.8}
+.nav-dropdown:hover .nav-dropdown-toggle .caret,
+.nav-dropdown.open .nav-dropdown-toggle .caret{transform:rotate(180deg);opacity:1}
+.nav-dropdown-toggle:hover{color:#fff}
+.nav-dropdown-toggle::after{
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--accent);
+  transition:width var(--t-norm);
+}
+.nav-dropdown:hover .nav-dropdown-toggle::after,
+.nav-dropdown.open .nav-dropdown-toggle::after{width:100%}
 .nav-dropdown-menu{
-  position:absolute;top:100%;left:-12px;min-width:220px;
+  position:absolute;top:calc(100% + 14px);left:-12px;min-width:220px;
   background:#0a0a0a;border:1px solid var(--line);border-radius:6px;
-  padding:8px 0;margin-top:8px;
+  padding:8px 0;
   opacity:0;visibility:hidden;pointer-events:none;
   transform:translateY(-6px);
   transition:opacity 180ms ease, transform 180ms ease, visibility 180ms;
@@ -580,7 +607,8 @@
   z-index:60;
 }
 .nav-dropdown:hover .nav-dropdown-menu,
-.nav-dropdown:focus-within .nav-dropdown-menu{
+.nav-dropdown:focus-within .nav-dropdown-menu,
+.nav-dropdown.open .nav-dropdown-menu{
   opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);
 }
 .nav-dropdown-menu a{
@@ -597,6 +625,7 @@
     margin:0;padding:0;
   }
   .nav-dropdown-toggle .caret{display:none}
+  .nav-dropdown-toggle::before{display:none}
   .nav-dropdown-menu a{padding:14px 44px;font-size:13px;color:#9a9a9a}
 }
 
@@ -610,25 +639,67 @@
 .crumbs [aria-current="page"]{color:#fff}
 @media(max-width:880px){.crumbs{padding:96px 0 0}}
 
-/* page hero (smaller than home hero, used on all sub-pages) */
+/* page hero (used on all sub-pages — text left, image right) */
 .page-hero{
-  padding:48px 0 64px;background:var(--bg-2);
+  position:relative;
+  padding:120px 0 96px;
+  background:#000;
   border-bottom:1px solid var(--line);
+  overflow:hidden;
 }
+.page-hero .container{position:relative;z-index:2}
+.page-hero-content{max-width:52%}
 .page-hero .eyebrow{margin-bottom:18px;display:inline-block}
 .page-hero h1{
   font-family:var(--font-display);font-weight:700;
   font-size:clamp(2rem, 1.2rem + 3vw, 4.2rem);
   line-height:1.02;letter-spacing:0;text-transform:uppercase;color:#fff;
-  max-width:18ch;
 }
 .page-hero-lede{
-  margin-top:24px;max-width:60ch;
+  margin-top:24px;
   font-size:clamp(1rem, .95rem + .3vw, 1.2rem);
   color:#d4d4d4;line-height:1.6;
 }
+
+/* The media slot — image on right half, dark-fade overlay on its left edge */
+.page-hero-media{
+  position:absolute;
+  top:0;bottom:0;right:0;
+  width:50%;
+  z-index:0;
+  background-color:#0a0a0a;
+  background-size:cover;
+  background-position:center right;
+  background-repeat:no-repeat;
+}
+/* Soft gradient seam on the photo's left edge so it fades into the dark text area */
+.page-hero.has-bg .page-hero-media::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg, #000 0%, rgba(0,0,0,.55) 18%, rgba(0,0,0,0) 45%);
+  pointer-events:none;
+}
+/* Placeholder when no image is set */
+.page-hero-media.is-placeholder{
+  background:
+    repeating-linear-gradient(45deg, transparent 0, transparent 18px, rgba(255,255,255,.018) 18px, rgba(255,255,255,.018) 36px),
+    linear-gradient(135deg, #141414 0%, #0a0a0a 100%);
+  border-left:1px dashed var(--line-strong);
+}
+.page-hero-media.is-placeholder::after{
+  content:"Image area";
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-family:var(--font-display);font-size:11px;font-weight:600;
+  letter-spacing:.24em;text-transform:uppercase;color:#3a3a3a;
+}
+
+/* Tablet/mobile: text full-width, hide the side media slot */
+@media(max-width:1024px){
+  .page-hero{padding:96px 0 72px}
+  .page-hero-content{max-width:100%}
+  .page-hero-media{display:none}
+}
 @media(max-width:880px){
-  .page-hero{padding:36px 0 48px}
+  .page-hero{padding:80px 0 56px}
 }
 
 /* prose layout (used on most content pages) */
@@ -801,3 +872,274 @@
 
 /* contact page tweaks */
 #contact-page{padding:60px 0 80px}
+
+/* ============================================================
+   STORM CHECKLIST — printable, brand-themed
+   ============================================================ */
+.checklist-page{padding:140px 0 80px;background:#0a0a0a;color:#e8e8e8;font-family:var(--font-sans);position:relative}
+.checklist-page::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:8px;background:var(--accent);z-index:5;
+}
+.cl-header{padding-bottom:36px;border-bottom:1px solid #2a2a2a;margin-bottom:48px}
+.cl-header-row{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.cl-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--accent);
+}
+.cl-pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;animation:cl-pulse 2s ease-in-out infinite}
+@keyframes cl-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.cl-h1{
+  font-family:var(--font-display);font-weight:700;font-size:clamp(2rem,1.3rem+2.5vw,3.4rem);
+  line-height:1.05;letter-spacing:.005em;text-transform:uppercase;color:#fff;margin:10px 0 0;
+}
+.cl-sub{margin:6px 0 0;color:#a0a0a0;font-family:var(--font-display);font-weight:500;letter-spacing:.08em;text-transform:uppercase;font-size:14px}
+.cl-sep{color:#555;margin:0 8px}
+.cl-contact{
+  padding:16px 20px;border:1px solid #2a2a2a;background:rgba(20,20,20,.5);border-radius:10px;
+  text-align:right;min-width:200px;
+}
+.cl-contact-eyebrow{margin:0;font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#a0a0a0}
+.cl-contact-phone{
+  display:block;margin:4px 0 2px;font-family:var(--font-display);font-weight:700;font-size:24px;
+  color:var(--accent);text-decoration:none;letter-spacing:.01em;
+}
+.cl-contact-phone:hover{color:var(--accent-2)}
+.cl-contact-sub{margin:0;color:#777;font-size:11px}
+.cl-actions{margin-top:24px;display:flex;gap:14px;flex-wrap:wrap}
+
+.cl-intro{padding:24px 28px;background:#141414;border-radius:10px;border-left:4px solid var(--accent);margin-bottom:48px}
+.cl-intro h2{
+  margin:0;font-family:var(--font-display);font-weight:700;font-size:1.4rem;
+  letter-spacing:.005em;text-transform:uppercase;color:#fff;
+}
+.cl-intro p{margin:10px 0 0;color:#d4d4d4;line-height:1.55}
+.cl-warn{
+  margin-top:18px;padding:10px 14px;border:1px solid rgba(232,69,31,.3);background:rgba(232,69,31,.06);
+  border-radius:6px;font-size:13px;color:#e8e8e8;line-height:1.55;
+}
+.cl-warn strong{color:var(--accent)}
+
+.cl-phases{display:flex;flex-direction:column;gap:32px}
+.cl-phase{padding:28px;border:1px solid #2a2a2a;background:rgba(20,20,20,.35);border-radius:10px}
+.cl-phase-head{display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid #2a2a2a;margin-bottom:24px}
+.cl-num{
+  flex-shrink:0;width:32px;height:32px;border-radius:8px;
+  background:rgba(232,69,31,.12);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--accent);
+}
+.cl-phase-head h3{
+  margin:0;font-family:var(--font-display);font-weight:700;font-size:1.25rem;
+  letter-spacing:.01em;text-transform:uppercase;color:#fff;
+}
+.cl-items{display:flex;flex-direction:column;gap:24px}
+.chk-item{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.chk-box{
+  margin-top:4px;width:20px;height:20px;
+  appearance:none;-webkit-appearance:none;
+  border:2px solid #4a4a4a;border-radius:4px;background:#0a0a0a;
+  cursor:pointer;position:relative;flex-shrink:0;
+  transition:background var(--t-fast), border-color var(--t-fast);
+}
+.chk-box:checked{background:var(--accent);border-color:var(--accent)}
+.chk-box:checked::after{
+  content:"";position:absolute;left:5px;top:1px;width:5px;height:11px;
+  border:solid #0a0a0a;border-width:0 2.5px 2.5px 0;transform:rotate(45deg);
+}
+.chk-box:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chk-item label{cursor:pointer;color:#d4d4d4;line-height:1.55}
+.chk-title{display:block;font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:#fff;letter-spacing:.005em;text-transform:uppercase;margin-bottom:4px}
+.chk-desc{display:block;font-size:15px;color:#c8c8c8;line-height:1.6;margin-bottom:10px}
+.chk-photo{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;font-family:var(--font-display);font-size:11px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent-2);
+  background:rgba(232,69,31,.06);border:1px solid rgba(232,69,31,.18);border-radius:4px;
+}
+.chk-photo-ico{font-size:13px}
+
+.cl-footer{margin-top:48px;padding:24px;border-top:1px solid #2a2a2a;color:#a8a8a8;font-size:14px;line-height:1.55}
+.cl-footer p{margin:0 0 8px}
+.cl-footer a{color:var(--accent-2);text-decoration:underline;text-underline-offset:3px}
+.cl-meta{font-size:12px;color:#666;font-family:var(--font-display);letter-spacing:.08em;text-transform:uppercase;margin-top:14px!important}
+
+@media(max-width:720px){
+  .cl-contact{min-width:0;text-align:left;width:100%}
+  .cl-actions .btn{width:100%;justify-content:center}
+  .cl-phase{padding:20px}
+}
+
+/* ============================================================
+   PRINT — checklist becomes a clean black-on-white document
+   ============================================================ */
+@media print{
+  @page{margin:0.5in 0.6in}
+  *{background:transparent!important;color:#000!important;box-shadow:none!important;text-shadow:none!important}
+  body{background:#fff!important;color:#000!important}
+  nav, footer, .menu-btn, .nav-cta, .cta-band, .crumbs, .marquee, .modal-back, .review-trigger{display:none!important}
+  .checklist-page{padding:0!important;background:#fff!important;color:#000!important}
+  .checklist-page::before{display:none!important}
+  .container{max-width:none!important;padding:0!important}
+  .cl-header{border-bottom:2px solid #000!important;margin-bottom:24px!important;padding-bottom:18px!important}
+  .cl-eyebrow{color:#c4471c!important}
+  .cl-pulse{display:none!important}
+  .cl-h1{color:#000!important}
+  .cl-sub{color:#333!important}
+  .cl-contact{border:1px solid #000!important;background:transparent!important}
+  .cl-contact-phone{color:#c4471c!important}
+  .cl-actions{display:none!important}
+  .cl-intro{background:transparent!important;border:1px solid #000!important;border-left:4px solid #c4471c!important}
+  .cl-intro h2{color:#000!important}
+  .cl-warn{border:1px solid #c4471c!important;background:transparent!important;color:#000!important}
+  .cl-warn strong{color:#c4471c!important}
+  .cl-phase{break-inside:avoid;border:1px solid #000!important;background:transparent!important;margin-bottom:18px;padding:16px!important}
+  .cl-phase-head{border-bottom:1px solid #000!important;padding-bottom:8px;margin-bottom:14px}
+  .cl-num{background:#c4471c!important;color:#fff!important;border-radius:4px}
+  .cl-phase-head h3, .chk-title{color:#000!important}
+  .chk-box{border:2px solid #000!important;background:#fff!important}
+  .chk-desc{color:#222!important}
+  .chk-photo{background:transparent!important;border:1px solid #c4471c!important;color:#c4471c!important}
+  .cl-footer{border-top:2px solid #000!important;color:#222!important;padding:12px 0 0!important}
+  .cl-footer a{color:#c4471c!important;text-decoration:none!important}
+  a[href]::after{content:""!important}
+}
+
+/* ============================================================
+   STORM CHECKLIST LEAD-GATE
+   ============================================================ */
+.gate-grid{
+  display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start;
+  margin-top:48px;
+}
+@media(max-width:880px){.gate-grid{grid-template-columns:1fr;gap:32px}}
+
+.gate-left h2{
+  font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,1.2rem+1.8vw,2.4rem);
+  line-height:1.08;text-transform:uppercase;color:#fff;letter-spacing:.005em;
+}
+.gate-lede{color:#d4d4d4;font-size:17px;line-height:1.6;margin:18px 0 28px;max-width:48ch}
+
+.gate-list{list-style:none;padding:0;margin:0 0 32px;display:flex;flex-direction:column;gap:18px}
+.gate-list li{
+  padding:18px 20px;background:rgba(20,20,20,.55);
+  border:1px solid #2a2a2a;border-left:3px solid var(--accent);border-radius:6px;
+  color:#c8c8c8;font-size:15px;line-height:1.55;
+}
+.gate-list li strong{
+  display:block;font-family:var(--font-display);font-weight:700;font-size:13px;
+  letter-spacing:.14em;text-transform:uppercase;color:#fff;margin-bottom:6px;
+}
+
+.gate-trust{
+  display:flex;flex-wrap:wrap;gap:10px;
+}
+.gate-trust span{
+  padding:8px 14px;border:1px solid #2a2a2a;background:rgba(20,20,20,.4);border-radius:999px;
+  font-family:var(--font-display);font-size:11px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:#c8c8c8;
+}
+
+.gate-form-wrap{position:sticky;top:120px}
+@media(max-width:880px){.gate-form-wrap{position:static}}
+
+.gate-form{
+  padding:32px;background:#141414;border:1px solid #2a2a2a;border-radius:10px;
+  box-shadow:0 30px 60px -28px rgba(0,0,0,.7);
+}
+.gate-form-title{
+  margin:0;font-family:var(--font-display);font-weight:700;font-size:1.4rem;
+  letter-spacing:.005em;text-transform:uppercase;color:#fff;
+}
+.gate-form-sub{margin:8px 0 24px;color:#a8a8a8;font-size:14px;line-height:1.5}
+
+.gate-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.gate-field label{
+  font-family:var(--font-display);font-size:11px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent-2);
+}
+.gate-field input{
+  background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;
+  padding:11px 12px;color:#fff;font:inherit;font-size:15px;
+  transition:border-color var(--t-fast);
+}
+.gate-field input:focus{outline:none;border-color:var(--accent)}
+
+.gate-submit{
+  width:100%;justify-content:center;margin-top:10px;font-size:14px!important;
+}
+.gate-privacy{
+  margin:14px 0 0;color:#8a8a8a;font-size:11px;line-height:1.5;text-align:center;
+}
+.gate-privacy a{color:var(--accent-2);text-decoration:underline}
+
+.gate-warn{
+  margin-top:48px;padding:18px 24px;
+  background:rgba(232,69,31,.06);border:1px solid rgba(232,69,31,.25);border-radius:8px;
+  color:#e8e8e8;line-height:1.6;font-size:15px;
+}
+.gate-warn strong{color:var(--accent)}
+.gate-warn a{color:var(--accent-2);text-decoration:underline;font-weight:600}
+
+/* ============================================================
+   DOWNLOAD CTA — distinct from btn-primary so the two don't compete
+   ============================================================ */
+.btn-download{
+  display:inline-flex;align-items:center;gap:10px;
+  background:transparent;
+  border:2px solid var(--accent);
+  color:var(--accent);
+  padding:12px 20px;
+  font-family:var(--font-display);font-size:13px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;line-height:1.2;
+  border-radius:var(--r);
+  transition:background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast);
+  position:relative;
+}
+.btn-download.btn-lg{padding:16px 24px;font-size:14px}
+.btn-download:hover{
+  background:var(--accent);
+  color:#0a0a0a;
+  box-shadow:0 12px 36px -10px var(--accent);
+  transform:translateY(-2px);
+}
+.btn-download .dl-icon{flex-shrink:0}
+.btn-download:hover .dl-icon{transform:translateY(2px)}
+.btn-download .dl-icon{transition:transform var(--t-norm)}
+
+.dl-badge{
+  display:inline-block;margin-left:6px;padding:3px 8px;
+  background:var(--accent);color:#0a0a0a;
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  border-radius:3px;
+  transition:background var(--t-fast), color var(--t-fast);
+}
+.btn-download:hover .dl-badge{
+  background:#0a0a0a;color:var(--accent);
+}
+
+/* Aside-card variant for the storm download CTA */
+.aside-card.download-card{
+  border:1px solid rgba(232,69,31,.4);
+  background:linear-gradient(180deg, rgba(232,69,31,.06), rgba(20,20,20,.55));
+}
+.aside-card.download-card h4{color:var(--accent)}
+.dl-badge-pill{
+  display:inline-block;margin-bottom:10px;padding:4px 10px;
+  background:rgba(232,69,31,.15);border:1px solid rgba(232,69,31,.35);
+  color:var(--accent-2);
+  font-family:var(--font-display);font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;border-radius:999px;
+}
+.aside-card.download-card .btn-download{
+  width:100%;justify-content:center;font-size:12px;padding:11px 16px;
+}
+.aside-card.download-card .btn-download .dl-badge{display:none}
+
+/* CTA band — allow 3 buttons to wrap nicely */
+.cta-band-actions{gap:12px}
+@media(max-width:560px){
+  .cta-band-actions .btn{width:100%;justify-content:center}
+  .btn-download .dl-badge{display:none}
+}
